@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 
 export default function Home() {
   const [players, setPlayers] = useState<string[]>(["", ""]);
-  const [config, setConfig] = useState({ startCups: 3, addPerRound: 1, cutOff: 2 });
+  const [config, setConfig] = useState({ startCups: "1", addPerRound: "1", cutOff: "0" });
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
 
@@ -32,13 +32,31 @@ export default function Home() {
     const validPlayers = players.filter((p) => p.trim() !== "");
     if (validPlayers.length < 2) return alert("2人以上必要です");
 
-    // プレイヤー名が重複している場合はゲーム開始できない
     const uniquePlayers = new Set(validPlayers);
     if (uniquePlayers.size !== validPlayers.length) {
       return alert("プレイヤー名が重複しています");
     }
 
-    localStorage.setItem("gameConfig", JSON.stringify({ players: validPlayers, config }));
+    // 数字入力のバリデーション
+    const parsedConfig = {
+      startCups: parseInt(config.startCups, 10),
+      addPerRound: parseInt(config.addPerRound, 10),
+      cutOff: parseInt(config.cutOff, 10),
+    };
+
+    if (
+      isNaN(parsedConfig.startCups) ||
+      isNaN(parsedConfig.addPerRound) ||
+      isNaN(parsedConfig.cutOff)
+    ) {
+      return alert("設定はすべて数値で入力してください");
+    }
+
+    localStorage.setItem("gameConfig", JSON.stringify({
+      players: validPlayers,
+      config: parsedConfig,
+    }));
+
     router.push("/play");
   };
 
@@ -70,29 +88,45 @@ export default function Home() {
       <div style={{ paddingTop: "24px", display: "flex", flexDirection: "column", gap: "12px" }}>
         <div style={{ display: "flex", alignItems: "center" }}>
           <input
-            type="number"
+            type="text"
+            inputMode='numeric'
             value={config.startCups}
-            onChange={(e) => setConfig({ ...config, startCups: +e.target.value })}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d*$/.test(value)) {
+                  setConfig({ ...config, startCups: value });
+                }
+              }}            
             className="config-input"
           />
           <span style={{ marginLeft: "8px", fontWeight: "bold" }}>杯スタート</span>
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
           <input
-            type="number"
+            type="text"
+            inputMode='numeric'
             value={config.addPerRound}
-            onChange={(e) => setConfig({ ...config, addPerRound: +e.target.value })}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d*$/.test(value)) {
+                  setConfig({ ...config, addPerRound: value });
+                }
+              }}            
             className="config-input"
           />
           <span style={{ marginLeft: "8px", fontWeight: "bold" }}>杯増し</span>
         </div>
         <div style={{ display: "flex", alignItems: "center" }}>
           <input
-            type="number"
-            min={0}
-            max={6}
+            type="text"
+            inputMode='numeric'
             value={config.cutOff}
-            onChange={(e) => setConfig({ ...config, cutOff: +e.target.value })}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d*$/.test(value)) {
+                  setConfig({ ...config, cutOff: value });
+                }
+              }}            
             className="config-input"
           />
           <span style={{ marginLeft: "8px", fontWeight: "bold" }}>以下目無し</span>
