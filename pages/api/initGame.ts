@@ -1,10 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { db } from "../../lib/firebase";
 import { collection, doc, setDoc } from "firebase/firestore";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { players, config } = req.body;
-  const gameId = "sampleGame"; // Œã‚Ù‚ÇUUID‚È‚Ç‚É
+  const gameId = "sampleGame"; // ï¿½ï¿½Ù‚ï¿½UUIDï¿½È‚Ç‚ï¿½
 
   const initialState = {
     players: players.map((name: string) => ({
