@@ -1,3 +1,4 @@
+import { app, analytics } from '../lib/firebase';
 import { ESLINT_DEFAULT_DIRS } from 'next/dist/lib/constants';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';

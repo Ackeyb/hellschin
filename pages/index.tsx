@@ -1,3 +1,4 @@
+import { app, analytics } from '../lib/firebase';
 import { useState } from "react";
 import { useRouter } from "next/router";
 
