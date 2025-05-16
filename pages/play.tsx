@@ -23,6 +23,8 @@ export default function PlayPage() {
   const [gameOver, setGameOver] = useState(false);
   const [showEffect, setShowEffect] = useState(false);
   const [showRainbow, setShowRainbow] = useState(false);
+  const [showShadow, setShowShadow] = useState(false);
+  const [showNextRound, setShowNextRound] = useState(false);
   const sound123 = useRef(null);
   const sound456 = useRef(null);
   const soundnnn = useRef(null);
@@ -70,6 +72,8 @@ export default function PlayPage() {
     if (selectedResult <= -100) {
       newPlayers[playerIndex].status = 'クソザコ（一二三）';
       sound123.current?.play();
+      setShowShadow(true)
+      setTimeout(() => setShowShadow(false), 3800);
       await sleep(3500);
     } else if (selectedResult <= 0) {
       newPlayers[playerIndex].status = `ほぼ負け犬（目なし）`;
@@ -162,6 +166,8 @@ export default function PlayPage() {
         setCups(cups => cups + addcups)
       }
 
+      setShowNextRound(true);
+      setTimeout(() => setShowNextRound(false), 1500);
       setRound(prev => prev + 1);
       setTurn(0);
     } else {
@@ -393,6 +399,7 @@ export default function PlayPage() {
       </div>
 
       {showRainbow && <div className="rainbow-overlay" />}    
+      {showShadow && <div className="Shadow-overlay" />}    
 
       {showEffect && (
         <div
@@ -481,6 +488,13 @@ export default function PlayPage() {
         もう一回遊べるドン
       </button>
     </div>
+
+    {showNextRound && (
+      <>
+        <div className="next-round-overlay" />
+        <div className="next-round-text">NEXT!!</div>
+      </>
+    )}
 
   </div>
   );
