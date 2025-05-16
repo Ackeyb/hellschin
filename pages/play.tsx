@@ -68,28 +68,29 @@ export default function PlayPage() {
     newPlayers[playerIndex].result = selectedResult - cutoff;
 
     if (selectedResult <= -100) {
-      newPlayers[playerIndex].status = 'ほぼ負け犬（一二三）';
+      newPlayers[playerIndex].status = 'クソザコ（一二三）';
       sound123.current?.play();
-    } else if (selectedResult < 0) {
-      newPlayers[playerIndex].status = `負け犬激アツ（目なし）`;
+      await sleep(3500);
+    } else if (selectedResult <= 0) {
+      newPlayers[playerIndex].status = `ほぼ負け犬（目なし）`;
     } else if (selectedResult < 100) {
-      newPlayers[playerIndex].status = `通常保留（${selectedResult}）`;
+      newPlayers[playerIndex].status = `まぁまぁ（${selectedResult}）`;
     } else if (selectedResult < 200) {
-      newPlayers[playerIndex].status = '赤保留（四五六）';
+      newPlayers[playerIndex].status = '激強（四五六）';
       sound456.current?.play();
       setShowRainbow(true);
       setTimeout(() => setShowRainbow(false), 5500);
       await sleep(5800);
       setCups(prev => prev * 2);
     } else if (selectedResult < 300) {
-      newPlayers[playerIndex].status = '激アツ中（ゾロ目）';
+      newPlayers[playerIndex].status = '超激強（ゾロ目）';
       soundnnn.current?.play();
       setShowRainbow(true);
       setTimeout(() => setShowRainbow(false), 3500);
       await sleep(3800);
       setCups(prev => prev * 3);
     } else {
-      newPlayers[playerIndex].status = '超激アツ（ピンゾロ）';
+      newPlayers[playerIndex].status = 'ほぼ神（ピンゾロ）';
       sound111.current?.play();
       setShowRainbow(true);
       setTimeout(() => setShowRainbow(false), 5700);
@@ -233,7 +234,7 @@ export default function PlayPage() {
             padding: "8px",
             listStyleType: "none",
             margin: 0,
-            marginBottom: "16px",
+            marginBottom: "10px",
           }}
         >
           {players.map((p, i) => (
@@ -274,7 +275,7 @@ export default function PlayPage() {
           padding: "5px",
           borderRadius: "8px",
           width: "350px",
-          marginBottom: "16px",
+          marginBottom: "10px",
           backgroundColor: "#f5f5f5",
           display: "flex",
           justifyContent: "center",
@@ -433,7 +434,7 @@ export default function PlayPage() {
             height:"40px",
             backgroundColor: gameOver ? "#ccc" : "#4caf50",
             color: gameOver ? "#666" : "white",
-            marginBottom:"10px"
+            marginBottom:"5px"
           }}
         >
           NEXT
@@ -449,10 +450,35 @@ export default function PlayPage() {
           fontWeight: "bold",
           cursor: "pointer",
           width: "350px",
-          height:"40px"
+          height:"40px",
+          marginBottom:"5px"
         }}
       >
         設定ページに戻る
+      </button>
+    </div>
+
+    <div>
+      <button 
+        onClick={() => {
+          if (gameOver) {
+            router.reload();
+          }
+        }}
+        disabled={!gameOver}
+        style={{
+          padding: "8px 16px",
+          borderRadius: "8px",
+          fontWeight: "bold",
+          cursor: gameOver ? "pointer" : "not-allowed",
+          width: "350px",
+          height: "40px",
+          backgroundColor: gameOver ? "#007bff" : "#cccccc",
+          color: "white",
+          border: "none",
+        }}
+      >
+        もう一回遊べるドン
       </button>
     </div>
 
