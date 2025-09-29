@@ -58,25 +58,29 @@ export default function PlayPage() {
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   // 選択された目に基づいて、結果を処理する関数
-  const handleResult = async() => {
+  const handleResult = async () => {
     if (selectedResult === null) return;
 
     const activePlayers = players.filter(p => p.canPlay);
-    const activePlayer = activePlayers[turn]; // 現在のプレイヤー（canPlay=true）
-
+    const activePlayer = activePlayers[turn];
     const newPlayers = [...players];
     const playerIndex = players.findIndex(p => p.name === activePlayer.name);
 
+    // このラウンドの参加人数
+    const roundPlayersCount = activePlayers.length;
+
+    // 結果を格納
     newPlayers[playerIndex].result = selectedResult - cutoff;
 
+    // 結果ステータス設定（目無しや特殊役）
     if (selectedResult <= -100) {
       newPlayers[playerIndex].status = 'クソザコ（一二三）';
       sound123.current?.play();
-      setShowShadow(true)
+      setShowShadow(true);
       setTimeout(() => setShowShadow(false), 3800);
       await sleep(3500);
     } else if (selectedResult <= 0) {
-      newPlayers[playerIndex].status = `ほぼ負け犬（目なし）`;
+      newPlayers[playerIndex].status = '目無し';
     } else if (selectedResult < 100) {
       newPlayers[playerIndex].status = `まぁまぁ（${selectedResult}）`;
     } else if (selectedResult < 200) {
@@ -102,41 +106,60 @@ export default function PlayPage() {
       setCups(prev => prev * 5);
     }
 
-    // 最後のプレイヤーだったら判定処理
+    // ラウンド終了時の処理
     if (turn === activePlayers.length - 1) {
-      // 現在生きているプレイヤー
+      // トップスコア判定
       const alivePlayers = newPlayers.filter(p => p.canPlay);
+      const aboveZero = alivePlayers.filter(p => (p.result ?? 0) > 0);
+      const maxResult = Math.max(...aboveZero.map(p => p.result ?? -Infinity));
+      const topScorers = aboveZero.filter(p => p.result === maxResult);
 
-      // 最大スコアを取得
-      const maxResult = Math.max(...alivePlayers.map(p => p.result ?? -Infinity));
-
-      // 勝ち抜けプレイヤー（最高スコア）
-      const winners = alivePlayers.filter(p => p.result === maxResult);
-
-      // 勝ち抜け以外のプレイヤーは残る
-      alivePlayers.forEach(p => {
-        if (!winners.includes(p)) {
-          // この人は残るので canPlay = true のまま
-          p.status = '継続中';
-        } else {
-          // 勝ち抜け
-          p.status = '勝ち抜け';
-          p.canPlay = false;
-        }
+      // 勝ち抜け設定（トップスコアで目ありの人）
+      topScorers.forEach(p => {
+        p.status = '勝ち抜け';
+        p.canPlay = false;
       });
 
-      // 残りプレイヤー数をチェック
-      const remaining = newPlayers.filter(p => p.canPlay);
+      // このラウンドで勝ち抜けた人数
+      const roundWinners = topScorers.length;
 
-      if (remaining.length === 1) {
-        // 最後の1人が負け
-        remaining[0].status = '負け犬（最後）';
-        remaining[0].canPlay = false;
+      const remainingCount = roundPlayersCount - roundWinners;
+
+      if (remainingCount === 0) {
+        // このラウンド参加者全員サドンデス（継続中）
+        alivePlayers.forEach(p => {
+          if (p.status !== '勝ち抜け') {
+            p.status = '継続中';
+            p.canPlay = true;
+          }
+        });
+      } else if (remainingCount === 1) {
+        // 残り1人 → 負け犬
+        alivePlayers.filter(p => p.status !== '勝ち抜け').forEach(p => {
+          p.status = '負け犬（最後）';
+          p.canPlay = false;
+        });
         setShowEffect(true);
         setTimeout(() => setShowEffect(false), 3000);
         setGameOver(true);
+        setPlayers(newPlayers);
+        setSelectedResult(null);
         return;
+      } else {
+        // 残り複数 → 目無し以外は継続中
+        alivePlayers.forEach(p => {
+          if (p.status !== '勝ち抜け' && (p.result ?? 0) <= 0) {
+            p.status = '目無し';
+            p.canPlay = true;
+          } else if (p.status !== '勝ち抜け') {
+            p.status = '継続中';
+            p.canPlay = true;
+          }
+        });
       }
+
+      // 杯数増加
+      setCups(cups => cups + addcups);
 
       // 次ラウンドへ
       setShowNextRound(true);
