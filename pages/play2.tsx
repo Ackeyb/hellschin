@@ -104,29 +104,32 @@ export default function PlayPage() {
 
     // 最後のプレイヤーだったら判定処理
     if (turn === activePlayers.length - 1) {
-      let alivePlayers = newPlayers.filter(p => p.canPlay);
+      // 現在生きているプレイヤー
+      const alivePlayers = newPlayers.filter(p => p.canPlay);
 
-      // スコア最大値を探す
+      // 最大スコア
       const maxResult = Math.max(...alivePlayers.map(p => p.result ?? -Infinity));
 
-      // 残すプレイヤーは最高値スコアのみ
+      // 残すプレイヤー
       const topScorers = alivePlayers.filter(p => p.result === maxResult);
 
-      // 最高値以外は全員脱落
+      // まず全員脱落扱いにしてから、最高スコアだけ生き残らせる
       alivePlayers.forEach(p => {
-        if (!topScorers.includes(p)) {
-          p.status = '負け犬';
-          p.canPlay = false;
-        }
+        p.status = '負け犬';
+        p.canPlay = false;
       });
 
-      // 残った人数で処理を分ける
-      alivePlayers = newPlayers.filter(p => p.canPlay);
+      topScorers.forEach(p => {
+        p.status = '勝ち残り候補';
+        p.canPlay = true;
+      });
 
-      if (alivePlayers.length === 1) {
-        // 最後の1人 → ゲーム終了
-        alivePlayers[0].status = '負け犬（最後）';
-        alivePlayers[0].canPlay = false;
+      // 再度生き残り人数をチェック
+      const remaining = newPlayers.filter(p => p.canPlay);
+
+      if (remaining.length === 1) {
+        remaining[0].status = '負け犬（最後）';
+        remaining[0].canPlay = false;
         setShowEffect(true);
         setTimeout(() => setShowEffect(false), 3000);
         setGameOver(true);
