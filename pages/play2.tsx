@@ -107,27 +107,29 @@ export default function PlayPage() {
       // 現在生きているプレイヤー
       const alivePlayers = newPlayers.filter(p => p.canPlay);
 
-      // 最大スコア
+      // 最大スコアを取得
       const maxResult = Math.max(...alivePlayers.map(p => p.result ?? -Infinity));
 
-      // 残すプレイヤー
-      const topScorers = alivePlayers.filter(p => p.result === maxResult);
+      // 勝ち抜けプレイヤー（最高スコア）
+      const winners = alivePlayers.filter(p => p.result === maxResult);
 
-      // まず全員脱落扱いにしてから、最高スコアだけ生き残らせる
+      // 勝ち抜け以外のプレイヤーは残る
       alivePlayers.forEach(p => {
-        p.status = '負け犬';
-        p.canPlay = false;
+        if (!winners.includes(p)) {
+          // この人は残るので canPlay = true のまま
+          p.status = '継続中';
+        } else {
+          // 勝ち抜け
+          p.status = '勝ち抜け';
+          p.canPlay = false;
+        }
       });
 
-      topScorers.forEach(p => {
-        p.status = '勝ち残り候補';
-        p.canPlay = true;
-      });
-
-      // 再度生き残り人数をチェック
+      // 残りプレイヤー数をチェック
       const remaining = newPlayers.filter(p => p.canPlay);
 
       if (remaining.length === 1) {
+        // 最後の1人が負け
         remaining[0].status = '負け犬（最後）';
         remaining[0].canPlay = false;
         setShowEffect(true);
