@@ -63,24 +63,21 @@ export default function PlayPage() {
 
     const activePlayers = players.filter(p => p.canPlay);
     const activePlayer = activePlayers[turn];
+
     const newPlayers = [...players];
     const playerIndex = players.findIndex(p => p.name === activePlayer.name);
 
-    // このラウンドの参加人数
-    const roundPlayersCount = activePlayers.length;
-
-    // 結果を格納
     newPlayers[playerIndex].result = selectedResult - cutoff;
 
-    // 結果ステータス設定（目無しや特殊役）
+    // 結果に応じた status と effect
     if (selectedResult <= -100) {
       newPlayers[playerIndex].status = 'クソザコ（一二三）';
       sound123.current?.play();
-      setShowShadow(true);
+      setShowShadow(true)
       setTimeout(() => setShowShadow(false), 3800);
       await sleep(3500);
     } else if (selectedResult <= 0) {
-      newPlayers[playerIndex].status = '目無し';
+      newPlayers[playerIndex].status = `ほぼ負け犬（目なし）`;
     } else if (selectedResult < 100) {
       newPlayers[playerIndex].status = `まぁまぁ（${selectedResult}）`;
     } else if (selectedResult < 200) {
@@ -106,66 +103,55 @@ export default function PlayPage() {
       setCups(prev => prev * 5);
     }
 
-    // ラウンド終了時の処理
+    // ラウンド終了判定
     if (turn === activePlayers.length - 1) {
-      // トップスコア判定
-      const alivePlayers = newPlayers.filter(p => p.canPlay);
-      const aboveZero = alivePlayers.filter(p => (p.result ?? 0) > 0);
+      const roundPlayers = activePlayers; // このラウンド参加者
+      const aboveZero = roundPlayers.filter(p => (p.result ?? 0) > 0);
       const maxResult = Math.max(...aboveZero.map(p => p.result ?? -Infinity));
       const topScorers = aboveZero.filter(p => p.result === maxResult);
 
-      // 勝ち抜け設定（トップスコアで目ありの人）
-      topScorers.forEach(p => {
-        p.status = '勝ち抜け';
-        p.canPlay = false;
-      });
-
-      // このラウンドで勝ち抜けた人数
-      const roundWinners = topScorers.length;
-
-      const remainingCount = roundPlayersCount - roundWinners;
+      const remainingCount = roundPlayers.length - topScorers.length;
 
       if (remainingCount === 0) {
         // このラウンド参加者全員サドンデス（継続中）
-        alivePlayers.forEach(p => {
-          if (p.status !== '勝ち抜け') {
+        roundPlayers.forEach(p => {
+          p.status = '継続中';
+          p.canPlay = true;
+        });
+      } else {
+        // topScorers を勝ち抜けにする
+        topScorers.forEach(p => {
+          p.status = '勝ち抜け';
+          p.canPlay = false;
+        });
+
+        // 残りの目無しは継続中
+        roundPlayers.forEach(p => {
+          if (!topScorers.includes(p) && (p.result ?? 0) <= 0) {
             p.status = '継続中';
             p.canPlay = true;
           }
         });
-      } else if (remainingCount === 1) {
-        // 残り1人 → 負け犬
-        alivePlayers.filter(p => p.status !== '勝ち抜け').forEach(p => {
-          p.status = '負け犬（最後）';
-          p.canPlay = false;
-        });
+
+        // カップ加算
+        setCups(prev => prev + addcups);
+      }
+
+      // 残り人数が1人になったら負け犬
+      const alivePlayers = newPlayers.filter(p => p.canPlay);
+      if (alivePlayers.length === 1) {
+        alivePlayers[0].status = '負け犬';
+        alivePlayers[0].canPlay = false;
         setShowEffect(true);
         setTimeout(() => setShowEffect(false), 3000);
         setGameOver(true);
-        setPlayers(newPlayers);
-        setSelectedResult(null);
-        return;
       } else {
-        // 残り複数 → 目無し以外は継続中
-        alivePlayers.forEach(p => {
-          if (p.status !== '勝ち抜け' && (p.result ?? 0) <= 0) {
-            p.status = '目無し';
-            p.canPlay = true;
-          } else if (p.status !== '勝ち抜け') {
-            p.status = '継続中';
-            p.canPlay = true;
-          }
-        });
+        // 次ラウンドへ
+        setShowNextRound(true);
+        setTimeout(() => setShowNextRound(false), 1500);
+        setRound(prev => prev + 1);
+        setTurn(0);
       }
-
-      // 杯数増加
-      setCups(cups => cups + addcups);
-
-      // 次ラウンドへ
-      setShowNextRound(true);
-      setTimeout(() => setShowNextRound(false), 1500);
-      setRound(prev => prev + 1);
-      setTurn(0);
     } else {
       setTurn(prev => prev + 1);
     }
