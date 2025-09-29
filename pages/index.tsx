@@ -60,6 +60,39 @@ export default function Home() {
     router.push("/play");
   };
 
+    const startGame2 = () => {
+    const validPlayers = players.filter((p) => p.trim() !== "");
+    if (validPlayers.length < 2) return alert("2人以上必要です");
+
+    const uniquePlayers = new Set(validPlayers);
+    if (uniquePlayers.size !== validPlayers.length) {
+      return alert("プレイヤー名が重複しています");
+    }
+
+    // 数字入力のバリデーション
+    const parsedConfig = {
+      startCups: parseInt(config.startCups, 10),
+      addPerRound: parseInt(config.addPerRound, 10),
+      cutOff: parseInt(config.cutOff, 10),
+    };
+
+    if (
+      isNaN(parsedConfig.startCups) ||
+      isNaN(parsedConfig.addPerRound) ||
+      isNaN(parsedConfig.cutOff)
+    ) {
+      return alert("設定はすべて数値で入力してください");
+    }
+
+    localStorage.setItem("gameConfig", JSON.stringify({
+      players: validPlayers,
+      config: parsedConfig,
+    }));
+
+    router.push("/play2");
+  };
+
+
   return (
     <div style={{ padding: "24px", maxWidth: "480px", margin: "0 auto" }}>
       <h1 style={{ fontSize: "1.25rem", fontWeight: "bold", marginBottom: "16px" }}>
@@ -133,10 +166,16 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ▼▼▼ ゲーム開始ボタン ▼▼▼ */}
+      {/* ▼▼▼ ゲーム開始ボタン１ ▼▼▼ */}
       <div style={{ marginTop: "24px" }}>
         <button onClick={startGame} className="start-button">
-          ゲーム開始
+          負け残り版ゲーム開始
+        </button>
+      </div>
+      {/* ▼▼▼ ゲーム開始ボタン２ ▼▼▼ */}
+      <div style={{ marginTop: "24px" }}>
+        <button onClick={startGame2} className="start-button">
+          勝ち抜け版ゲーム開始
         </button>
       </div>
     </div>
