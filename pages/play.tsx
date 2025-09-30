@@ -89,6 +89,8 @@ const handleResult = async () => {
     setTimeout(() => setShowShadow(false), 3800);
     await sleep(3500);
 
+    setPlayers(revivedPlayers);
+
     // 次のターンに進む
     const nextActivePlayers = newPlayers.filter(p => p.canPlay);
     setTurn(prev => (prev + 1) % nextActivePlayers.length);
