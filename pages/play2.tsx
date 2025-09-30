@@ -163,6 +163,7 @@ export default function PlayPage() {
     
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <PreloadDiceImages />
       <div
         style={{
           border: "None",
