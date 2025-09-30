@@ -84,12 +84,11 @@ const handleResult = async () => {
       p.result = 0;
     });
 
+    setPlayers([...newPlayers]);
     sound123.current?.play();
     setShowShadow(true);
     setTimeout(() => setShowShadow(false), 3800);
     await sleep(3500);
-
-    setPlayers(revivedPlayers);
 
     // 次のターンに進む
     const nextActivePlayers = newPlayers.filter(p => p.canPlay);
