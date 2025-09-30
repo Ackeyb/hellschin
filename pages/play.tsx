@@ -49,8 +49,9 @@ export default function PlayPage() {
       );
     }
 
-    const revive = localStorage.getItem("reviveOn123");
-    setReviveOn123(revive === "true");
+    // 123復活フラグの読み込み
+    const reviveFlag = localStorage.getItem("reviveOn123");
+    setReviveOn123(reviveFlag === "true");
 
     if (typeof window !== "undefined") {
       sound123.current = new Audio("/audios/123.wav");
@@ -83,17 +84,19 @@ const handleResult = async () => {
         p.canPlay = true;       // 全員復活
         p.status = "復活！";    // ステータス変更
         p.result = 0;
-      });}
+      });
+      setPlayers([...newPlayers]);
+      // 次のターンに進む
+      const nextIndex = newPlayers.findIndex(p => p.name === activePlayer.name);
+      setTurn((nextIndex) % newPlayers.length);
+    }
 
-    setPlayers([...newPlayers]);
+    newPlayers[playerIndex].status = 'クソザコ（一二三）';
+
     sound123.current?.play();
     setShowShadow(true);
     setTimeout(() => setShowShadow(false), 3800);
     await sleep(3500);
-
-    // 次のターンに進む
-    const nextIndex = newPlayers.findIndex(p => p.name === activePlayer.name);
-    setTurn((nextIndex) % newPlayers.length);
 
   } else if (selectedResult <= 0) {
     newPlayers[playerIndex].status = `ほぼ負け犬（目なし）`;
@@ -140,6 +143,7 @@ const handleResult = async () => {
           p.canPlay = false;
         }
       });
+      setShowNextRound(false); 
       setShowEffect(true);
       setTimeout(() => setShowEffect(false), 3000);
       setGameOver(true);
@@ -166,6 +170,7 @@ const handleResult = async () => {
           p.canPlay = false;
         }
       });
+      setShowNextRound(false); 
       setShowEffect(true);
       setTimeout(() => setShowEffect(false), 3000);
       setGameOver(true);
@@ -183,10 +188,22 @@ const handleResult = async () => {
       setCups(prev => prev + addcups);
     }
 
-    setShowNextRound(true);
-    setTimeout(() => setShowNextRound(false), 1500);
-    setRound(prev => prev + 1);
-    setTurn(0);
+const isGameFinished = newPlayers.filter(p => p.canPlay).length <= 1;
+
+if (isGameFinished) {
+  // 完全決着
+  setShowNextRound(false);      // NEXT は出さない
+  setShowEffect(true);
+  setTimeout(() => setShowEffect(false), 3000);
+  setGameOver(true);
+} else if (!newPlayers.some(p => p.status === '負け犬')) {
+  // NEXT を表示していいケースだけ
+  setCups(prev => prev + addcups);
+  setShowNextRound(true);
+  setTimeout(() => setShowNextRound(false), 1500);
+  setRound(prev => prev + 1);
+  setTurn(0);
+}
 
   } else {
     // ラウンド途中なら次のターン

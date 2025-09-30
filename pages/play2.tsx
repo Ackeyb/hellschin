@@ -48,6 +48,11 @@ export default function PlayPage() {
         }))
       );
     }
+
+    // 123復活フラグの読み込み
+    const reviveFlag = localStorage.getItem("reviveOn123");
+    setReviveOn123(reviveFlag === "true");
+    
     if (typeof window !== "undefined") {
       sound123.current = new Audio("/audios/123.wav");
       sound456.current = new Audio("/audios/456.mp4");
@@ -95,6 +100,7 @@ const handleResult = async () => {
       setSelectedResult(null);     // 出目リセット
       return;                      // このターンのラウンド判定はスキップ
     }
+    newPlayers[playerIndex].status = 'クソザコ（一二三）';
   }
 
   // それ以外の結果
