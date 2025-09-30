@@ -78,11 +78,12 @@ const handleResult = async () => {
 
   // 123（クソザコ）を出した場合
   if (selectedResult <= -100) {
-    newPlayers.forEach(p => {
-      p.canPlay = true;       // 全員復活
-      p.status = "復活！";    // ステータス変更
-      p.result = 0;
-    });
+    if (reviveOn123) {
+      newPlayers.forEach(p => {
+        p.canPlay = true;       // 全員復活
+        p.status = "復活！";    // ステータス変更
+        p.result = 0;
+      });}
 
     setPlayers([...newPlayers]);
     sound123.current?.play();

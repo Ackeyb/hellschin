@@ -81,18 +81,20 @@ const handleResult = async () => {
     await sleep(3500);
 
     // 全員復活 & status リセット
-    const resetPlayers = newPlayers.map(p => ({
-      ...p,
-      canPlay: true,
-      status: "リセットぉ！",
-      result: 0,
-      revivedThisRound: true,
-    }));
+    if (reviveOn123) {
+      const resetPlayers = newPlayers.map(p => ({
+        ...p,
+        canPlay: true,
+        status: "リセットぉ！",
+        result: 0,
+        revivedThisRound: true,
+      }));
 
-    setPlayers(resetPlayers);   // 表示も即時更新
-    setTurn(0);                  // ターンを最初のプレイヤーに戻す
-    setSelectedResult(null);     // 出目リセット
-    return;                      // このターンのラウンド判定はスキップ
+      setPlayers(resetPlayers);   // 表示も即時更新
+      setTurn(0);                  // ターンを最初のプレイヤーに戻す
+      setSelectedResult(null);     // 出目リセット
+      return;                      // このターンのラウンド判定はスキップ
+    }
   }
 
   // それ以外の結果
