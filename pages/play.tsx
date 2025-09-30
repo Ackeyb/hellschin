@@ -3,7 +3,7 @@ import { ESLINT_DEFAULT_DIRS } from 'next/dist/lib/constants';
 import { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { NodeNextRequest } from 'next/dist/server/base-http/node';
-import PreloadDiceImages from "@/components/PreloadDiceImages";
+import PreloadDiceImages from "../components/PreloadDiceImages";
 
 type Player = {
   name: string;
