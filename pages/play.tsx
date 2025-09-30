@@ -3,6 +3,7 @@ import { ESLINT_DEFAULT_DIRS } from 'next/dist/lib/constants';
 import { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { NodeNextRequest } from 'next/dist/server/base-http/node';
+import PreloadDiceImages from "@/components/PreloadDiceImages";
 
 type Player = {
   name: string;
@@ -449,16 +450,21 @@ export default function PlayPage() {
     </div>
 
     <div>
-      <button 
-        onClick={() => router.push("/")}
+      <button
+        onClick={() => {
+          const ok = window.confirm("本当に設定ページに戻っちゃうの？");
+          if (ok) {
+            router.push("/");
+          }
+        }}
         style={{
           padding: "8px 16px",
           borderRadius: "8px",
           fontWeight: "bold",
           cursor: "pointer",
           width: "350px",
-          height:"40px",
-          marginBottom:"5px"
+          height: "40px",
+          marginBottom: "5px"
         }}
       >
         設定ページに戻る
