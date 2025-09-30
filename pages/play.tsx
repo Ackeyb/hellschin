@@ -92,7 +92,7 @@ const handleResult = async () => {
 
     // 次のターンに進む
     const nextIndex = newPlayers.findIndex(p => p.name === activePlayer.name);
-    setTurn((nextIndex + 1) % newPlayers.length);
+    setTurn((nextIndex) % newPlayers.length);
 
   } else if (selectedResult <= 0) {
     newPlayers[playerIndex].status = `ほぼ負け犬（目なし）`;
