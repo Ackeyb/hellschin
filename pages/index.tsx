@@ -7,6 +7,7 @@ export default function Home() {
   const [config, setConfig] = useState({ startCups: "1", addPerRound: "1", cutOff: "0" });
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [reviveOn123, setReviveOn123] = useState(false);
 
   const handlePlayerChange = (index: number, value: string) => {
     const newPlayers = [...players];
@@ -57,6 +58,9 @@ export default function Home() {
       config: parsedConfig,
     }));
 
+    // ここで123復活フラグも保存
+    localStorage.setItem("reviveOn123", reviveOn123 ? "true" : "false");
+
     router.push("/play");
   };
 
@@ -88,6 +92,9 @@ export default function Home() {
       players: validPlayers,
       config: parsedConfig,
     }));
+
+    // ここで123復活フラグも保存
+    localStorage.setItem("reviveOn123", reviveOn123 ? "true" : "false");
 
     router.push("/play2");
   };
@@ -164,6 +171,19 @@ export default function Home() {
           />
           <span style={{ marginLeft: "8px", fontWeight: "bold" }}>以下目無し</span>
         </div>
+      </div>
+
+      {/* ▼▼▼ 123復活ルール ▼▼▼ */}
+      <div style={{ marginTop: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
+        <input
+          type="checkbox"
+          checked={reviveOn123}
+          onChange={(e) => setReviveOn123(e.target.checked)}
+          id="reviveOn123"
+        />
+        <label htmlFor="reviveOn123" style={{ fontWeight: "bold" }}>
+          123を出したら全員復活する
+        </label>
       </div>
 
       {/* ▼▼▼ ゲーム開始ボタン１ ▼▼▼ */}

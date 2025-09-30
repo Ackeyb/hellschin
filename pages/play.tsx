@@ -26,11 +26,13 @@ export default function PlayPage() {
   const [showRainbow, setShowRainbow] = useState(false);
   const [showShadow, setShowShadow] = useState(false);
   const [showNextRound, setShowNextRound] = useState(false);
+  const [reviveOn123, setReviveOn123] = useState(false);
+  const [revivedThisRound, setRevivedThisRound] = useState(false);
   const sound123 = useRef(null);
   const sound456 = useRef(null);
   const soundnnn = useRef(null);
   const sound111 = useRef(null);
-
+  
   useEffect(() => {
     const data = localStorage.getItem("gameConfig");
     if (data) {
@@ -42,10 +44,14 @@ export default function PlayPage() {
         parsed.players.map((name: string) => ({
           name,
           canPlay: true,
-          status: 'BATTLE！', // 初期ステータスは「BATTLE！」
+          status: 'BATTLE！',
         }))
       );
     }
+
+    const revive = localStorage.getItem("reviveOn123");
+    setReviveOn123(revive === "true");
+
     if (typeof window !== "undefined") {
       sound123.current = new Audio("/audios/123.wav");
       sound456.current = new Audio("/audios/456.mp4");
@@ -59,125 +65,136 @@ export default function PlayPage() {
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   // 選択された目に基づいて、結果を処理する関数
-  const handleResult = async() => {
-    if (selectedResult === null) return;
+const handleResult = async () => {
+  if (selectedResult === null) return;
 
-    const activePlayers = players.filter(p => p.canPlay);
-    const activePlayer = activePlayers[turn]; // 現在のプレイヤー（canPlay=true）
+  const newPlayers = [...players];
+  const activePlayers = newPlayers.filter(p => p.canPlay);
+  const activePlayer = activePlayers[turn];
+  const playerIndex = newPlayers.findIndex(p => p.name === activePlayer.name);
 
-    const newPlayers = [...players];
-    const playerIndex = players.findIndex(p => p.name === activePlayer.name);
+  // 現在の結果をセット
+  newPlayers[playerIndex].result = selectedResult - cutoff;
 
-    newPlayers[playerIndex].result = selectedResult - cutoff;
+  // 123（クソザコ）を出した場合
+  if (selectedResult <= -100) {
+    newPlayers.forEach(p => {
+      p.canPlay = true;       // 全員復活
+      p.status = "復活！";    // ステータス変更
+      p.result = 0;
+    });
 
-    if (selectedResult <= -100) {
-      newPlayers[playerIndex].status = 'クソザコ（一二三）';
-      sound123.current?.play();
-      setShowShadow(true)
-      setTimeout(() => setShowShadow(false), 3800);
-      await sleep(3500);
-    } else if (selectedResult <= 0) {
-      newPlayers[playerIndex].status = `ほぼ負け犬（目なし）`;
-    } else if (selectedResult < 100) {
-      newPlayers[playerIndex].status = `まぁまぁ（${selectedResult}）`;
-    } else if (selectedResult < 200) {
-      newPlayers[playerIndex].status = '激強（四五六）';
-      sound456.current?.play();
-      setShowRainbow(true);
-      setTimeout(() => setShowRainbow(false), 5500);
-      await sleep(5800);
-      setCups(prev => prev * 2);
-    } else if (selectedResult < 300) {
-      newPlayers[playerIndex].status = '超激強（ゾロ目）';
-      soundnnn.current?.play();
-      setShowRainbow(true);
-      setTimeout(() => setShowRainbow(false), 3500);
-      await sleep(3800);
-      setCups(prev => prev * 3);
+    sound123.current?.play();
+    setShowShadow(true);
+    setTimeout(() => setShowShadow(false), 3800);
+    await sleep(3500);
+
+    // 次のターンに進む
+    const nextActivePlayers = newPlayers.filter(p => p.canPlay);
+    setTurn(prev => (prev + 1) % nextActivePlayers.length);
+
+  } else if (selectedResult <= 0) {
+    newPlayers[playerIndex].status = `ほぼ負け犬（目なし）`;
+  } else if (selectedResult < 100) {
+    newPlayers[playerIndex].status = `まぁまぁ（${selectedResult}）`;
+  } else if (selectedResult < 200) {
+    newPlayers[playerIndex].status = '激強（四五六）';
+    sound456.current?.play();
+    setShowRainbow(true);
+    setTimeout(() => setShowRainbow(false), 5500);
+    await sleep(5800);
+    setCups(prev => prev * 2);
+  } else if (selectedResult < 300) {
+    newPlayers[playerIndex].status = '超激強（ゾロ目）';
+    soundnnn.current?.play();
+    setShowRainbow(true);
+    setTimeout(() => setShowRainbow(false), 3500);
+    await sleep(3800);
+    setCups(prev => prev * 3);
+  } else {
+    newPlayers[playerIndex].status = 'ほぼ神（ピンゾロ）';
+    sound111.current?.play();
+    setShowRainbow(true);
+    setTimeout(() => setShowRainbow(false), 5700);
+    await sleep(6000);
+    setCups(prev => prev * 5);
+  }
+
+  // ラウンドの最後のプレイヤーだった場合
+  const currentActivePlayers = newPlayers.filter(p => p.canPlay);
+  if (turn === currentActivePlayers.length - 1) {
+    const zeroOrLess = currentActivePlayers.filter(p => (p.result ?? 0) <= 0);
+    const aboveZero = currentActivePlayers.filter(p => (p.result ?? 0) > 0);
+    const minResult = Math.min(...aboveZero.map(p => p.result ?? Infinity));
+    const lowestScorers = aboveZero.filter(p => p.result === minResult);
+
+    if (zeroOrLess.length === 1) {
+      currentActivePlayers.forEach(p => {
+        if ((p.result ?? 0) <= 0) {
+          p.status = '負け犬';
+          p.canPlay = false;
+        } else {
+          p.status = '勝ち抜け';
+          p.canPlay = false;
+        }
+      });
+      setShowEffect(true);
+      setTimeout(() => setShowEffect(false), 3000);
+      setGameOver(true);
+
+    } else if (zeroOrLess.length >= 2) {
+      currentActivePlayers.forEach(p => {
+        if ((p.result ?? 0) <= 0) {
+          p.status = '負け犬候補';
+          p.canPlay = true;
+        } else {
+          p.status = '勝ち抜け';
+          p.canPlay = false;
+        }
+      });
+      setCups(prev => prev + addcups);
+
+    } else if (lowestScorers.length === 1) {
+      currentActivePlayers.forEach(p => {
+        if (p.result === minResult) {
+          p.status = '負け犬';
+          p.canPlay = false;
+        } else {
+          p.status = '勝ち抜け';
+          p.canPlay = false;
+        }
+      });
+      setShowEffect(true);
+      setTimeout(() => setShowEffect(false), 3000);
+      setGameOver(true);
+
     } else {
-      newPlayers[playerIndex].status = 'ほぼ神（ピンゾロ）';
-      sound111.current?.play();
-      setShowRainbow(true);
-      setTimeout(() => setShowRainbow(false), 5700);
-      await sleep(6000);
-      setCups(prev => prev * 5);
+      currentActivePlayers.forEach(p => {
+        if (lowestScorers.includes(p)) {
+          p.status = '負け犬候補';
+          p.canPlay = true;
+        } else {
+          p.status = '勝ち抜け';
+          p.canPlay = false;
+        }
+      });
+      setCups(prev => prev + addcups);
     }
 
-    // 最後のプレイヤーだったら判定処理
-    if (turn === activePlayers.length - 1) {
-      const alivePlayers = newPlayers.filter(p => p.canPlay);
-      const zeroOrLess = alivePlayers.filter(p => (p.result ?? 0) <= 0);
-      const aboveZero = alivePlayers.filter(p => (p.result ?? 0) > 0);
-      const minResult = Math.min(...aboveZero.map(p => p.result ?? Infinity));
-      const lowestScorers = aboveZero.filter(p => p.result === minResult);
+    setShowNextRound(true);
+    setTimeout(() => setShowNextRound(false), 1500);
+    setRound(prev => prev + 1);
+    setTurn(0);
 
-      if (zeroOrLess.length === 1) {
-        alivePlayers.forEach(p => {
-          if ((p.result ?? 0) <= 0) {
-            p.status = '負け犬';
-            p.canPlay = false;
-          } else {
-            p.status = '勝ち抜け';
-            p.canPlay = false;
-          }
-        });
-        setShowEffect(true);
-        setTimeout(() => {
-          setShowEffect(false);
-        } , 3000);      
-        setGameOver(true);
-        return;
-      } else if (zeroOrLess.length >= 2) {
-        alivePlayers.forEach(p => {
-          if ((p.result ?? 0) <= 0) {
-            p.status = '負け犬候補';
-            p.canPlay = true;
-          } else {
-            p.status = '勝ち抜け';
-            p.canPlay = false;
-          }
-        });
-        setCups(cups => cups + addcups)
-      } else if (lowestScorers.length === 1) {
-        alivePlayers.forEach(p => {
-          if (p.result === minResult) {
-            p.status = '負け犬';
-            p.canPlay = false;
-          } else {
-            p.status = '勝ち抜け';
-            p.canPlay = false;
-          }
-        });
-        setShowEffect(true);
-        setTimeout(() => {
-          setShowEffect(false);
-        } , 3000);      
-        setGameOver(true);
-        return;
-      } else {
-        alivePlayers.forEach(p => {
-          if (lowestScorers.includes(p)) {
-            p.status = '負け犬候補';
-            p.canPlay = true;
-          } else {
-            p.status = '勝ち抜け';
-            p.canPlay = false;
-          }
-        });
-        setCups(cups => cups + addcups)
-      }
+  } else {
+    // ラウンド途中なら次のターン
+    const nextActivePlayers = newPlayers.filter(p => p.canPlay);
+    setTurn(prev => (prev + 1) % nextActivePlayers.length);
+  }
 
-      setShowNextRound(true);
-      setTimeout(() => setShowNextRound(false), 1500);
-      setRound(prev => prev + 1);
-      setTurn(0);
-    } else {
-      setTurn(prev => prev + 1);
-    }
-
-    setPlayers(newPlayers);
-    setSelectedResult(null);
-  };
+  setPlayers(newPlayers);
+  setSelectedResult(null);
+};
     
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
