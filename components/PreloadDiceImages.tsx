@@ -25,11 +25,13 @@ export default function PreloadDiceImages() {
       "Hand_Selected_nnn.png"
     ];
 
+    // 裏で画像を生成して先に読み込む
     imageList.forEach(src => {
       const img = new Image();
       img.src = `/images/${src}`;
+      // 強制的にキャッシュするために onload/onerror は不要
     });
   }, []);
 
-  return null;
+  return null; // このコンポーネント自体は表示しない
 }
