@@ -234,6 +234,7 @@ const handleResult = async () => {
     
   return (
     <div style={containerStyle}>
+      <PreloadDiceImages />   
       <div
         style={{
           border: "None",

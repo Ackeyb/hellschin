@@ -273,6 +273,7 @@ if (isGameFinished) {
     
   return (
     <div style={containerStyle}>
+      <PreloadDiceImages /> 
       <div
         style={{
           border: "None",
