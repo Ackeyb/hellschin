@@ -1,6 +1,7 @@
 import { app, analytics } from '../lib/firebase';
 import { useState } from "react";
 import { useRouter } from "next/router";
+import MessageDialog from "@/components/ErrorDialog";
 
 export default function Home() {
   const [config, setConfig] = useState<ConfigInput>({
@@ -16,6 +17,7 @@ export default function Home() {
   const [players, setPlayers] = useState<string[]>([]);
   const [playerCount, setPlayerCount] = useState(2);
   const [backupPlayers, setBackupPlayers] = useState<string[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   type GameConfig = {
     startCups: number;
@@ -109,7 +111,7 @@ export default function Home() {
       router.push(mode === "lose" ? "/play" : "/play2");
     } catch (e) {
       if (e instanceof Error) {
-        alert(e.message);
+        setErrorMessage(e.message);
       }
     }
   };
@@ -714,6 +716,12 @@ export default function Home() {
         </div>
       )}
 
+      <MessageDialog
+        open={errorMessage !== null}
+        title="入力エラー"
+        message={errorMessage}
+        onClose={() => setErrorMessage(null)}
+      />
 
     </div>
   );

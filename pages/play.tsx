@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { NodeNextRequest } from 'next/dist/server/base-http/node';
 import PreloadDiceImages from "../components/PreloadDiceImages";
 import type { CSSProperties } from "react";
+import MessageDialog from "@/components/MessageDialog";
 
 type Player = {
   name: string;
@@ -67,6 +68,8 @@ export default function PlayPage() {
     fontWeight: "bold",
     cursor: "pointer",
   };
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
 
     
   useEffect(() => {
@@ -532,12 +535,7 @@ if (isGameFinished) {
 
     <div>
       <button
-        onClick={() => {
-          const ok = window.confirm("本当に設定ページに戻っちゃうの？");
-          if (ok) {
-            router.push("/");
-          }
-        }}
+        onClick={() => setShowDialog(true)}
         style={{
           padding: "8px 16px",
           borderRadius: "8px",
@@ -582,6 +580,15 @@ if (isGameFinished) {
         <div className="next-round-text">NEXT!!</div>
       </>
     )}
+    <MessageDialog
+      open={showDialog}
+      message="逃げるの？"
+      onConfirm={() => {
+        // 戻る処理
+        router.push("/");
+      }}
+      onCancel={() => setShowDialog(false)}
+    />
 
   </div>
   );
