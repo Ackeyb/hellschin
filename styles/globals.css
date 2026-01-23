@@ -43,11 +43,55 @@ a {
   margin-top: 4px;
   border: none;
   cursor: pointer;
+  margin-right: 8px;
 }
 
 .start-button {
-  background-color: #16a34a; /* 緑ボタン */
+  width: 100%;
+  max-width: 360px;
+  padding: 16px 20px;
+  border-radius: 999px;
+
+  font-size: 1.05rem;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+
+  border: none;
+  cursor: pointer;
+
+  box-shadow:
+    0 6px 0 rgba(0, 0, 0, 0.15),
+    0 10px 20px rgba(233, 107, 138, 0.35);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
 }
+
+.start-button:hover {
+  filter: brightness(1.05);
+}
+
+.start-button:active {
+  transform: translateY(4px);
+  box-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.2),
+    0 4px 8px rgba(233, 107, 138, 0.25);
+}
+
+/* 負け残り */
+.start-button.lose {
+  background: linear-gradient(180deg, #f3a1b3, #e96b8a);
+  color: #fff;
+}
+
+/* 勝ち抜け */
+.start-button.win {
+  background: linear-gradient(180deg, #ffd6e0, #ff9db3);
+  color: #6b3a44;
+}
+
 
 .config-label {
   display: block;
@@ -56,11 +100,14 @@ a {
 }
 
 .config-input {
-  margin-left: 8px;
-  padding: 4px 6px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  width: 4em;
+  width: 64px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #f3a1b3;
+  text-align: center;
+  font-weight: bold;
+  color: #6b3a44;
+  background-color: #fff;
 }
 
 @keyframes showText {

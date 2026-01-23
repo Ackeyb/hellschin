@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { NodeNextRequest } from 'next/dist/server/base-http/node';
 import PreloadDiceImages from "../components/PreloadDiceImages";
+import type { CSSProperties } from "react";
 
 type Player = {
   name: string;
@@ -32,7 +33,42 @@ export default function PlayPage() {
   const sound456 = useRef(null);
   const soundnnn = useRef(null);
   const sound111 = useRef(null);
-  
+  const isLastPlayer = (index: number, players: Player[]) => index === players.length - 1;
+  const [rule123, setRule123] = useState<{
+    type: "end" | "revive";
+    endCupLimit: number | null;
+  } | null>(null);
+  const isRule123Enabled = Boolean(rule123);
+  const containerStyle: CSSProperties = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    background: "linear-gradient(#fff5f5, #fffaf0)",
+    minHeight: "100vh",
+  };
+  const panelStyle = {
+    width: "350px",
+    backgroundColor: "#ffffff",
+    borderRadius: "12px",
+    boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+    padding: "8px",
+    marginBottom: "10px",
+  };
+
+  const titleStyle = {
+    fontSize: "1.4em",
+    fontWeight: "bold",
+  };
+
+  const buttonStyle = {
+    width: "350px",
+    height: "40px",
+    borderRadius: "20px",
+    fontWeight: "bold",
+    cursor: "pointer",
+  };
+
+    
   useEffect(() => {
     const data = localStorage.getItem("gameConfig");
     if (data) {
@@ -40,6 +76,7 @@ export default function PlayPage() {
       setCups(parsed.config.startCups);
       setAddCups(parsed.config.addPerRound);
       setCutoff(parsed.config.cutOff);
+      setRule123(parsed.rule123);
       setPlayers(
         parsed.players.map((name: string) => ({
           name,
@@ -66,31 +103,21 @@ export default function PlayPage() {
   const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
   // 選択された目に基づいて、結果を処理する関数
-const handleResult = async () => {
+  const handleResult = async () => {
   if (selectedResult === null) return;
 
-  const newPlayers = [...players];
-  const activePlayers = newPlayers.filter(p => p.canPlay);
-  const activePlayer = activePlayers[turn];
-  const playerIndex = newPlayers.findIndex(p => p.name === activePlayer.name);
+    const newPlayers = [...players];
+    const activePlayers = newPlayers.filter(p => p.canPlay);
+    const activePlayer = activePlayers[turn];
+    const playerIndex = newPlayers.findIndex(p => p.name === activePlayer.name);
 
-  // 現在の結果をセット
-  newPlayers[playerIndex].result = selectedResult - cutoff;
+    // 現在の結果をセット
+    newPlayers[playerIndex].result = selectedResult - cutoff;
 
-  // 123（クソザコ）を出した場合
+  // 123（クソザコ）
   if (selectedResult <= -100) {
-    if (reviveOn123) {
-      newPlayers.forEach(p => {
-        p.canPlay = true;       // 全員復活
-        p.status = "復活！";    // ステータス変更
-        p.result = 0;
-      });
-      setPlayers([...newPlayers]);
-      // 次のターンに進む
-      const nextIndex = newPlayers.findIndex(p => p.name === activePlayer.name);
-      setTurn((nextIndex) % newPlayers.length);
-    }
 
+    // ① ステータス & 演出
     newPlayers[playerIndex].status = 'クソザコ（一二三）';
 
     sound123.current?.play();
@@ -98,6 +125,36 @@ const handleResult = async () => {
     setTimeout(() => setShowShadow(false), 3800);
     await sleep(3500);
 
+    // ② まず表示反映（超重要）
+    setPlayers([...newPlayers]);
+
+    // ③ end ルール（最優先）
+    if (
+      rule123 &&
+      rule123.type === "end" &&
+      cups >= rule123.endCupLimit
+    ) { 
+      setShowNextRound(false); 
+      setShowEffect(true);
+      setTimeout(() => setShowEffect(false), 3000);
+      setGameOver(true);
+      return;
+    }
+
+    // ④ revive ルール
+    if (
+      rule123 &&
+      rule123.type === "revive"
+    ) {
+      newPlayers.forEach(p => {
+        p.canPlay = true;
+        p.status = "復活！";
+        p.result = 0;
+      });
+      setPlayers([...newPlayers]);
+      setTurn(0);
+      return;
+    }  
   } else if (selectedResult <= 0) {
     newPlayers[playerIndex].status = `ほぼ負け犬（目なし）`;
   } else if (selectedResult < 100) {
@@ -198,7 +255,6 @@ if (isGameFinished) {
   setGameOver(true);
 } else if (!newPlayers.some(p => p.status === '負け犬')) {
   // NEXT を表示していいケースだけ
-  setCups(prev => prev + addcups);
   setShowNextRound(true);
   setTimeout(() => setShowNextRound(false), 1500);
   setRound(prev => prev + 1);
@@ -216,8 +272,7 @@ if (isGameFinished) {
 };
     
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <PreloadDiceImages />
+    <div style={containerStyle}>
       <div
         style={{
           border: "None",
@@ -230,7 +285,7 @@ if (isGameFinished) {
           fontSize: "1.75em"
         }}
       >
-        <strong>Round {round}</strong>
+        <span style={titleStyle}>Round {round}</span>
       </div>
       <div
         style={{
@@ -244,31 +299,14 @@ if (isGameFinished) {
           whiteSpace: "nowrap",
         }}
       >
-        <span>負け犬は</span>
-        <span 
-          style={{ 
-            fontSize: "1.75em", 
-            fontWeight: "bold", 
-            margin: "2px", 
-            color:"red", 
-            lineHeight: "1"
-          }}
-        >
+        <span>負け犬は </span>
+        <span style={{ fontSize: "2em", fontWeight: "bold", color: "#e11d48" }}>
           {cups}
         </span>
-        <span>杯　（キャップ</span> 
-        <span 
-          style={{ 
-            fontSize: "1.5em", 
-            fontWeight: "bold", 
-            margin: "2px", 
-            color:"red",
-            lineHeight: "1"
-          }}
-        >
-          {cups / 5}
-        </span>
-        <span>杯）</span> 
+        <span> 杯</span>
+        <div style={{ fontSize: "0.9em", color: "#666" }}>
+          （キャップ {cups / 5} 杯）
+        </div>
       </div>
       <div>
         <ul
@@ -285,17 +323,21 @@ if (isGameFinished) {
             <li
               key={i}
               style={{
-                borderBottom: "1px solid gray",
-                padding: "4px 0",
-                ...(currentPlayer && p.name === currentPlayer.name
-                  ? {
-                      backgroundColor: "yellow",
-                      color: "red",
-                      fontWeight: "bold",
-                    }
-                  : {}),
-                marginLeft:"1em",
-                marginRight:"1em"
+                padding: "2px 0",
+                marginBottom: "4px",
+                borderRadius: "8px",
+                backgroundColor:
+                  currentPlayer && p.name === currentPlayer.name
+                    ? "#fff1f2"
+                    : "transparent",
+                color:
+                  currentPlayer && p.name === currentPlayer.name
+                    ? "#e11d48"
+                    : "#333",
+                fontWeight:
+                  currentPlayer && p.name === currentPlayer.name
+                    ? "bold"
+                    : "normal",
               }}
             >
               <span>　</span>
@@ -477,8 +519,9 @@ if (isGameFinished) {
             cursor: gameOver ? "not-allowed" : "pointer",
             width: "350px",
             height:"40px",
-            backgroundColor: gameOver ? "#ccc" : "#4caf50",
-            color: gameOver ? "#666" : "white",
+            backgroundColor: gameOver ? "#ccc" : "#22c55e",
+            color: "white",
+            boxShadow: "0 3px 6px rgba(0,0,0,0.2)",
             marginBottom:"5px"
           }}
         >
@@ -518,12 +561,12 @@ if (isGameFinished) {
         disabled={!gameOver}
         style={{
           padding: "8px 16px",
-          borderRadius: "8px",
+          borderRadius: "20px",
           fontWeight: "bold",
           cursor: gameOver ? "pointer" : "not-allowed",
           width: "350px",
           height: "40px",
-          backgroundColor: gameOver ? "#007bff" : "#cccccc",
+          backgroundColor: gameOver ? "#3b82f6" : "#ccc",
           color: "white",
           border: "none",
         }}
