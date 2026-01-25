@@ -92,7 +92,7 @@ export default function Home() {
       if (useRule123 && rule123 === "end") {
         const limit = Number(endCupLimit);
         if (!limit || isNaN(limit) || limit <= 0) {
-          throw new Error("終了条件の杯数を正しく入力してください");
+          throw new Error("終了条件の杯数がゼロとかナメてんの？");
         }
       }
 
@@ -120,15 +120,15 @@ export default function Home() {
     const trimmed = players.map((p) => p.trim());
 
     if (trimmed.length < 2) {
-      throw new Error("プレイヤーは2人以上必要です");
+      throw new Error("その人数でどうやって遊ぶん？");
     }
 
     if (trimmed.some((p) => p === "")) {
-      throw new Error("空のプレイヤー名があります");
+      throw new Error("名前ないやついる！");
     }
 
     if (new Set(trimmed).size !== trimmed.length) {
-      throw new Error("プレイヤー名が重複しています");
+      throw new Error("同じ名前のやついる！");
     }
 
     return trimmed;
@@ -147,11 +147,15 @@ export default function Home() {
     };
 
     if (Object.values(parsed).some((v) => isNaN(v))) {
-      throw new Error("設定値はすべて数値で入力してください");
+      throw new Error("設定値はすべて数字じゃないとおかしくなるでしょ！");
     }
 
     if (parsed.startCups <= 0) {
-      throw new Error("スタート杯数は1以上にしてください");
+      throw new Error("スタート杯数がゼロとか飲む気ないの？");
+    }
+
+    if (parsed.cutOff < 0 || parsed.cutOff >= 7) {
+      throw new Error("サイコロの出目って0～6だって知らんの？");
     }
 
     return parsed;
@@ -671,6 +675,7 @@ export default function Home() {
                 display: "flex",
                 gap: "12px",
                 marginTop: "16px",
+                justifyContent: "flex-end",
               }}
             >
               <button
@@ -679,7 +684,6 @@ export default function Home() {
                   setIsDialogOpen(false);
                 }}
                 style={{
-                  flex: 1,
                   padding: "10px",
                   borderRadius: "999px",
                   border: "1px solid #ccc",
@@ -696,11 +700,13 @@ export default function Home() {
                     validatePlayers(players);
                     setIsDialogOpen(false);
                   } catch (e) {
-                    alert(e.message);
+                    if (e instanceof Error) {
+                      setErrorMessage(e.message);
+                    }
                   }
                 }}
                 style={{
-                  padding: "8px 16px",
+                  padding: "10px 22px",
                   borderRadius: "999px",
                   border: "none",
                   backgroundColor: "#e96b8a",
@@ -718,7 +724,7 @@ export default function Home() {
 
       <MessageDialog
         open={errorMessage !== null}
-        title="入力エラー"
+        title="えらーーー！"
         message={errorMessage}
         onClose={() => setErrorMessage(null)}
       />
