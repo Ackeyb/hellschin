@@ -584,7 +584,10 @@ if (isGameFinished) {
       open={showDialog}
       message="逃げるの？"
       onConfirm={() => {
-        // 戻る処理
+        localStorage.setItem(
+          "resumePlayers",
+          JSON.stringify(players)
+        );
         router.push("/");
       }}
       onCancel={() => setShowDialog(false)}

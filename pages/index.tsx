@@ -2,6 +2,7 @@ import { app, analytics } from '../lib/firebase';
 import { useState } from "react";
 import { useRouter } from "next/router";
 import MessageDialog from "@/components/ErrorDialog";
+import { useEffect } from "react";
 
 export default function Home() {
   const [config, setConfig] = useState<ConfigInput>({
@@ -18,6 +19,27 @@ export default function Home() {
   const [playerCount, setPlayerCount] = useState(2);
   const [backupPlayers, setBackupPlayers] = useState<string[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("resumePlayers");
+    if (!saved) return;
+
+    try {
+      const parsed = JSON.parse(saved) as { name: string }[];
+
+      // 名前だけ取り出す
+      const names = parsed.map(p => p.name);
+
+      setPlayers(names);
+      setPlayerCount(names.length);
+
+      // 使い切りにしたいなら消す（任意）
+      localStorage.removeItem("resumePlayers");
+    } catch {
+      // 壊れてたら無視
+      localStorage.removeItem("resumePlayers");
+    }
+  }, []);
 
   type GameConfig = {
     startCups: number;

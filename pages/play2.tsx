@@ -210,7 +210,10 @@ const handleResult = async () => {
           p.canPlay = true;
         }
       });
-      setCups(prev => prev + addcups);
+      const alivePlayersAfter = newPlayers.filter(p => p.canPlay);
+      if (alivePlayersAfter.length > 1) {
+        setCups(prev => prev + addcups);
+      }    
     }
 
     const alivePlayers = newPlayers.filter(p => p.canPlay);
@@ -544,7 +547,10 @@ const handleResult = async () => {
       open={showDialog}
       message="逃げるの？"
       onConfirm={() => {
-        // 戻る処理
+        localStorage.setItem(
+          "resumePlayers",
+          JSON.stringify(players)
+        );
         router.push("/");
       }}
       onCancel={() => setShowDialog(false)}
