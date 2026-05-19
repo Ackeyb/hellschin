@@ -1,5 +1,6 @@
 import { labels } from "@/lib/game/labels";
 import type { Player } from "@/lib/game/types";
+import styles from "@/styles/Game.module.css";
 
 type PlayerListProps = {
   players: Player[];
@@ -8,15 +9,17 @@ type PlayerListProps = {
 
 export default function PlayerList({ players, currentPlayerId }: PlayerListProps) {
   return (
-    <section className="player-list" aria-label={labels.sections.players}>
+    <section className={styles.playerList} aria-label={labels.sections.players}>
       {players.map((player) => (
         <div
-          className={player.id === currentPlayerId ? "player-row active" : "player-row"}
+          className={player.id === currentPlayerId ? `${styles.playerRow} ${styles.active}` : styles.playerRow}
           key={player.id}
         >
-          <span className="player-name">{player.name}</span>
-          <span className={`status-pill ${player.status}`}>{labels.statuses[player.status]}</span>
-          {player.result !== null && <span className="player-result">{player.result}</span>}
+          <span className={styles.playerName}>{player.name}</span>
+          <span className={`${styles.statusPill} ${styles[player.status] ?? ""}`}>
+            {labels.statuses[player.status]}
+          </span>
+          {player.result !== null && <span className={styles.playerResult}>{player.result}</span>}
         </div>
       ))}
     </section>

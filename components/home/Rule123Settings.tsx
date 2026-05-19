@@ -1,5 +1,6 @@
 import { labels } from "@/lib/game/labels";
 import type { Rule123 } from "@/lib/game/types";
+import styles from "@/styles/Home.module.css";
 
 type Rule123SettingsProps = {
   useRule123: boolean;
@@ -19,9 +20,9 @@ export default function Rule123Settings({
   onEndCupLimitChange,
 }: Rule123SettingsProps) {
   return (
-    <div className="rule-box">
-      <div className="section-heading small">{labels.sections.rule123}</div>
-      <label className="check-row">
+    <div className={styles.ruleBox}>
+      <div className={styles.smallHeading}>{labels.sections.rule123}</div>
+      <label className={styles.checkRow}>
         <input
           checked={useRule123}
           onChange={(event) => onUseRule123Change(event.target.checked)}
@@ -30,7 +31,7 @@ export default function Rule123Settings({
         <span>{labels.rule123Options.enable}</span>
       </label>
 
-      <label className={useRule123 ? "radio-row" : "radio-row disabled"}>
+      <label className={useRule123 ? styles.radioRow : `${styles.radioRow} ${styles.disabled}`}>
         <input
           checked={rule123Type === "revive"}
           disabled={!useRule123}
@@ -41,7 +42,7 @@ export default function Rule123Settings({
         <span>{labels.rule123Options.revive}</span>
       </label>
 
-      <label className={useRule123 ? "radio-row" : "radio-row disabled"}>
+      <label className={useRule123 ? styles.radioRow : `${styles.radioRow} ${styles.disabled}`}>
         <input
           checked={rule123Type === "end"}
           disabled={!useRule123}
@@ -52,9 +53,15 @@ export default function Rule123Settings({
         <span>{labels.rule123Options.end}</span>
       </label>
 
-      <div className={useRule123 && rule123Type === "end" ? "nested-field" : "nested-field disabled"}>
+      <div
+        className={
+          useRule123 && rule123Type === "end"
+            ? styles.nestedField
+            : `${styles.nestedField} ${styles.disabled}`
+        }
+      >
         <input
-          className="config-input"
+          className={styles.configInput}
           disabled={!useRule123 || rule123Type !== "end"}
           inputMode="numeric"
           onChange={(event) => onEndCupLimitChange(event.target.value)}

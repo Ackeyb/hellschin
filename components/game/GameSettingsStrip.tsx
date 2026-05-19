@@ -1,4 +1,5 @@
 import { labels } from "@/lib/game/labels";
+import styles from "@/styles/Game.module.css";
 
 type GameSettingsStripProps = {
   addPerRound: number;
@@ -7,7 +8,7 @@ type GameSettingsStripProps = {
 
 export default function GameSettingsStrip({ addPerRound, cutOff }: GameSettingsStripProps) {
   return (
-    <section className="settings-strip" aria-label={labels.sections.gameSettings}>
+    <section className={styles.settingsStrip} aria-label={labels.sections.gameSettings}>
       <span>
         {labels.fields.addPerRound}: <strong>{addPerRound}</strong>
       </span>

@@ -1,5 +1,6 @@
 import { labels } from "@/lib/game/labels";
 import { resultChoices } from "@/lib/game/results";
+import styles from "@/styles/Game.module.css";
 
 type ResultSelectorProps = {
   selectedResult: number | null;
@@ -8,22 +9,22 @@ type ResultSelectorProps = {
 
 export default function ResultSelector({ selectedResult, onSelect }: ResultSelectorProps) {
   return (
-    <section className="result-panel" aria-label="Result choices">
+    <section className={styles.resultPanel} aria-label="Result choices">
       <button
-        className={selectedResult === 0 ? "text-choice selected" : "text-choice"}
+        className={selectedResult === 0 ? `${styles.textChoice} ${styles.selected}` : styles.textChoice}
         onClick={() => onSelect(0)}
         type="button"
       >
         {labels.resultChoices.none}
       </button>
 
-      <div className="image-choice-grid">
+      <div className={styles.imageChoiceGrid}>
         {resultChoices
           .filter((choice) => choice.image)
           .map((choice) => (
             <button
               aria-label={labels.resultChoices[choice.labelKey]}
-              className="image-choice"
+              className={styles.imageChoice}
               key={choice.id}
               onClick={() => onSelect(choice.value)}
               type="button"

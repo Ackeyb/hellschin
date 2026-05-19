@@ -11,6 +11,7 @@ import { applyResult, createInitialGameState, getCurrentPlayer } from "@/lib/gam
 import { labels } from "@/lib/game/labels";
 import { loadGameSetup, saveResumePlayers } from "@/lib/game/storage";
 import type { GameMode, GameState } from "@/lib/game/types";
+import styles from "@/styles/Game.module.css";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 
@@ -70,7 +71,7 @@ export default function GamePage({ mode }: GamePageProps) {
 
   if (!gameState) {
     return (
-      <main className="game-shell">
+      <main className={styles.gameShell}>
         <p className="empty-message">{labels.messages.missingGameConfig}</p>
         <button className="primary-button wide-button" onClick={() => router.push("/")} type="button">
           {labels.actions.backToSettings}
@@ -80,7 +81,7 @@ export default function GamePage({ mode }: GamePageProps) {
   }
 
   return (
-    <main className="game-shell">
+    <main className={styles.gameShell}>
       <PreloadDiceImages />
       <GameHeader mode={gameState.mode} round={gameState.round} cups={gameState.cups} />
       <PlayerList players={gameState.players} currentPlayerId={currentPlayer?.id} />

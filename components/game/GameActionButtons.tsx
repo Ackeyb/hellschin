@@ -1,4 +1,5 @@
 import { labels } from "@/lib/game/labels";
+import styles from "@/styles/Game.module.css";
 
 type GameActionButtonsProps = {
   canAdvance: boolean;
@@ -16,7 +17,7 @@ export default function GameActionButtons({
   onPlayAgain,
 }: GameActionButtonsProps) {
   return (
-    <nav className="game-actions" aria-label="Game actions">
+    <nav className={styles.gameActions} aria-label="Game actions">
       <button
         className="primary-button wide-button"
         disabled={!canAdvance}

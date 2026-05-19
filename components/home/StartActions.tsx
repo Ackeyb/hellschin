@@ -1,5 +1,6 @@
 import { labels } from "@/lib/game/labels";
 import type { GameMode } from "@/lib/game/types";
+import styles from "@/styles/Home.module.css";
 
 type StartActionsProps = {
   onStart: (mode: GameMode) => void;
@@ -7,11 +8,11 @@ type StartActionsProps = {
 
 export default function StartActions({ onStart }: StartActionsProps) {
   return (
-    <div className="start-actions">
-      <button className="start-button lose" onClick={() => onStart("lose")} type="button">
+    <div className={styles.startActions}>
+      <button className={`${styles.startButton} ${styles.lose}`} onClick={() => onStart("lose")} type="button">
         {labels.actions.startLoseMode}
       </button>
-      <button className="start-button win" onClick={() => onStart("win")} type="button">
+      <button className={`${styles.startButton} ${styles.win}`} onClick={() => onStart("win")} type="button">
         {labels.actions.startWinMode}
       </button>
     </div>

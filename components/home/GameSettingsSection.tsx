@@ -1,6 +1,7 @@
 import { labels } from "@/lib/game/labels";
 import type { Rule123 } from "@/lib/game/types";
 import type { ConfigInput } from "@/lib/game/validation";
+import styles from "@/styles/Home.module.css";
 import NumericField from "./NumericField";
 import Rule123Settings from "./Rule123Settings";
 
@@ -26,12 +27,12 @@ export default function GameSettingsSection({
   onEndCupLimitChange,
 }: GameSettingsSectionProps) {
   return (
-    <section className="panel" aria-labelledby="settings-heading">
-      <div className="section-heading" id="settings-heading">
+    <section className={styles.panel} aria-labelledby="settings-heading">
+      <div className={styles.sectionHeading} id="settings-heading">
         {labels.sections.gameSettings}
       </div>
 
-      <div className="field-stack">
+      <div className={styles.fieldStack}>
         <NumericField
           label={labels.fields.startCups}
           unit={labels.fields.cupsUnit}

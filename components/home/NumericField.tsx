@@ -7,10 +7,10 @@ type NumericFieldProps = {
 
 export default function NumericField({ label, unit, value, onChange }: NumericFieldProps) {
   return (
-    <label className="numeric-field">
+    <label className={styles.numericField}>
       <span>{label}</span>
       <input
-        className="config-input"
+        className={styles.configInput}
         inputMode="numeric"
         onChange={(event) => onChange(event.target.value)}
         placeholder="0"
@@ -21,3 +21,4 @@ export default function NumericField({ label, unit, value, onChange }: NumericFi
     </label>
   );
 }
+import styles from "@/styles/Home.module.css";

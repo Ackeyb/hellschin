@@ -1,5 +1,6 @@
 import { labels } from "@/lib/game/labels";
 import type { GameMode } from "@/lib/game/types";
+import styles from "@/styles/Game.module.css";
 
 type GameHeaderProps = {
   mode: GameMode;
@@ -9,9 +10,9 @@ type GameHeaderProps = {
 
 export default function GameHeader({ mode, round, cups }: GameHeaderProps) {
   return (
-    <header className="game-header">
+    <header className={styles.gameHeader}>
       <h1>Round {round}</h1>
-      <div className="cups-line">
+      <div className={styles.cupsLine}>
         <span>{mode === "lose" ? labels.statuses.loser : labels.statuses.winner}</span>
         <strong>{cups}</strong>
         <span>{labels.fields.cupsUnit}</span>

@@ -1,0 +1,178 @@
+.gameShell {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  width: min(100%, 480px);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 20px;
+  background: linear-gradient(#fff5f5, #fffaf0);
+}
+
+.gameHeader {
+  text-align: center;
+}
+
+.gameHeader h1 {
+  margin: 0;
+  color: #d91f4d;
+  font-size: 1.45rem;
+  letter-spacing: 0;
+}
+
+.cupsLine {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 3px double #2f2430;
+  white-space: nowrap;
+}
+
+.cupsLine strong {
+  color: #e11d48;
+  font-size: 2rem;
+}
+
+.cupsLine small {
+  color: #65565f;
+}
+
+.playerList,
+.resultPanel {
+  padding: 16px;
+  border: 1px solid #f3a1b3;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.playerList {
+  display: grid;
+  gap: 8px;
+}
+
+.playerRow {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  color: #333;
+}
+
+.active {
+  color: #e11d48;
+  background: #fff1f2;
+  font-weight: 900;
+}
+
+.playerName {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.playerResult {
+  min-width: 32px;
+  color: #6b3a44;
+  text-align: right;
+}
+
+.statusPill {
+  min-width: 74px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  color: #6b3a44;
+  background: #f8e1e7;
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.winner {
+  color: #14532d;
+  background: #dcfce7;
+}
+
+.loser,
+.special123 {
+  color: #7f1d1d;
+  background: #fee2e2;
+}
+
+.settingsStrip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid #d7b5bd;
+  border-radius: 8px;
+  color: #6b3a44;
+  background: #f8f4f5;
+}
+
+.resultPanel {
+  display: grid;
+  gap: 10px;
+}
+
+.textChoice {
+  width: 100%;
+  min-height: 40px;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  background: rgba(47, 36, 48, 0.62);
+  font-weight: 900;
+}
+
+.selected {
+  color: #2f2430;
+  background: #fff;
+  border: 1px solid #2f2430;
+}
+
+.imageChoiceGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.imageChoice {
+  display: grid;
+  place-items: center;
+  height: 58px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+}
+
+.imageChoice img {
+  max-width: 100%;
+  height: 50px;
+  object-fit: contain;
+}
+
+.gameActions {
+  display: grid;
+  gap: 10px;
+}
+
+@media (max-width: 420px) {
+  .gameShell {
+    padding: 14px;
+  }
+
+  .imageChoiceGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .cupsLine {
+    flex-wrap: wrap;
+  }
+}

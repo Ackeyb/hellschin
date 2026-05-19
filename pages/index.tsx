@@ -8,6 +8,7 @@ import { labels } from "@/lib/game/labels";
 import { loadResumePlayerNames, saveGameSetup } from "@/lib/game/storage";
 import type { GameMode, Rule123 } from "@/lib/game/types";
 import { type ConfigInput, validateConfig, validatePlayers } from "@/lib/game/validation";
+import styles from "@/styles/Home.module.css";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
@@ -121,7 +122,7 @@ export default function Home() {
   };
 
   return (
-    <main className="home-shell">
+    <main className={styles.homeShell}>
       <HomeHeader />
       <PlayerSection
         players={players}
