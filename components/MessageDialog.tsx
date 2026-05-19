@@ -1,81 +1,40 @@
+import { labels } from "@/lib/game/labels";
+import type { ReactNode } from "react";
+
 type MessageDialogProps = {
   open: boolean;
   title?: string;
-  message: string;
+  message: ReactNode;
+  confirmLabel?: string;
+  cancelLabel?: string;
   onConfirm: () => void;
   onCancel?: () => void;
 };
 
 export default function MessageDialog({
   open,
-  title = "確認",
+  title,
   message,
+  confirmLabel = labels.actions.confirm,
+  cancelLabel = labels.actions.cancel,
   onConfirm,
   onCancel,
 }: MessageDialogProps) {
   if (!open) return null;
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        backgroundColor: "rgba(0,0,0,0.5)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 100,
-      }}
-    >
-      <div
-        style={{
-          width: "300px",
-          background: "white",
-          borderRadius: "16px",
-          padding: "16px",
-          textAlign: "center",
-          boxShadow: "0 8px 20px rgba(0,0,0,0.25)",
-        }}
-      >
-        <div style={{ fontWeight: "bold", marginBottom: "8px" }}>
-          {title}
-        </div>
-
-        <div style={{ marginBottom: "16px", fontSize: "0.95em" }}>
-          {message}
-        </div>
-
-        <div style={{ display: "flex", gap: "8px" }}>
+    <div className="dialog-backdrop" role="presentation">
+      <div className="dialog" role="dialog" aria-modal="true" aria-label={title}>
+        {title && <div className="dialog-title">{title}</div>}
+        <div className="dialog-message">{message}</div>
+        <div className="dialog-actions">
           {onCancel && (
-            <button
-              onClick={onCancel}
-              style={{
-                flex: 1,
-                height: "36px",
-                borderRadius: "9999px",
-                border: "1px solid #ccc",
-                background: "#f5f5f5",
-                cursor: "pointer",
-              }}
-            >
-              いいえ
+            <button className="secondary-button" onClick={onCancel} type="button">
+              {cancelLabel}
             </button>
           )}
-
-          <button
-            onClick={onConfirm}
-            style={{
-              flex: 1,
-              height: "36px",
-              borderRadius: "9999px",
-              border: "none",
-              background: "#fb7185",
-              color: "white",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
-          >
-            はい
+          <button className="primary-button" onClick={onConfirm} type="button">
+            {confirmLabel}
           </button>
         </div>
       </div>
