@@ -42,11 +42,13 @@ export default function GamePage({ mode }: GamePageProps) {
     [gameState],
   );
 
-  const showTemporaryEffect = (effect: keyof EffectState, duration: number) => {
-    setEffects((prev) => ({ ...prev, [effect]: true }));
+  const showTemporaryEffect = (effect: keyof EffectState, duration: number, delay = 0) => {
     window.setTimeout(() => {
-      setEffects((prev) => ({ ...prev, [effect]: false }));
-    }, duration);
+      setEffects((prev) => ({ ...prev, [effect]: true }));
+      window.setTimeout(() => {
+        setEffects((prev) => ({ ...prev, [effect]: false }));
+      }, duration);
+    }, delay);
   };
 
   const handleResult = () => {
@@ -57,12 +59,18 @@ export default function GamePage({ mode }: GamePageProps) {
     setSelectedResult(null);
 
     if (outcome.sound) sounds.play(outcome.sound);
-    if (outcome.effects.includes("curse")) showTemporaryEffect("curse", 2800);
-    if (outcome.effects.includes("happy")) showTemporaryEffect("happy", 2200);
-    if (outcome.effects.includes("happier")) showTemporaryEffect("happier", 2600);
-    if (outcome.effects.includes("happiest")) showTemporaryEffect("happiest", 3200);
-    if (outcome.effects.includes("finish")) showTemporaryEffect("finish", 3000);
-    if (outcome.effects.includes("nextRound")) showTemporaryEffect("nextRound", 1500);
+    const rollEffects: Array<{ effect: keyof EffectState; duration: number }> = [
+      { effect: "curse", duration: 2800 },
+      { effect: "happy", duration: 2200 },
+      { effect: "happier", duration: 2600 },
+      { effect: "happiest", duration: 3200 },
+    ];
+    const rollEffect = rollEffects.find(({ effect }) => outcome.effects.includes(effect));
+    const followUpDelay = rollEffect ? rollEffect.duration + 120 : 0;
+
+    if (rollEffect) showTemporaryEffect(rollEffect.effect, rollEffect.duration);
+    if (outcome.effects.includes("finish")) showTemporaryEffect("finish", 2200, followUpDelay);
+    if (outcome.effects.includes("nextRound")) showTemporaryEffect("nextRound", 1600, followUpDelay);
   };
 
   const backToSettings = () => {

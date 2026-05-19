@@ -39,7 +39,7 @@ export const resultChoices: ResultChoice[] = [
     image: {
       normal: "/images/Hand_nnn.png",
       selected: "/images/Hand_Selected_nnn.png",
-      alt: "Triple",
+      alt: "ゾロ目",
     },
   },
   {

@@ -155,7 +155,7 @@ test("shows special result labels while keeping internal scores", () => {
   const outcome = applyResult(createState(), 206);
 
   assert.equal(outcome.state.players[0].result, 204);
-  assert.equal(outcome.state.players[0].displayResult, "ぞろ目");
+  assert.equal(outcome.state.players[0].displayResult, "ゾロ目");
   assert.equal(outcome.state.players[0].status, "scored");
 });
 

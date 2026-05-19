@@ -14,6 +14,7 @@ type GameEffectsProps = {
 };
 
 type SpecialEffectType = "curse" | "happy" | "happier" | "happiest";
+type CutInEffectType = "finish" | "nextRound";
 
 export const initialEffects: EffectState = {
   curse: false,
@@ -27,47 +28,34 @@ export const initialEffects: EffectState = {
 export default function GameEffects({ effects }: GameEffectsProps) {
   return (
     <>
-      {effects.curse && <SpecialEffectOverlay type="curse" title="123" subtitle="CURSED" />}
-      {effects.happy && <SpecialEffectOverlay type="happy" title="456" subtitle="HAPPY" />}
-      {effects.happier && <SpecialEffectOverlay type="happier" title="ぞろ目" subtitle="SUPER HAPPY" />}
-      {effects.happiest && <SpecialEffectOverlay type="happiest" title="ピンゾロ" subtitle="MAX HAPPY" />}
-      {effects.finish && (
-        <div className="finish-overlay">
-          {labels.overlays.finish.split("").map((char, index) => (
-            <span className="drop-text" key={`${char}-${index}`} style={{ animationDelay: `${index * 0.18}s` }}>
-              {char}
-            </span>
-          ))}
-        </div>
-      )}
-      {effects.nextRound && (
-        <>
-          <div className="next-round-overlay" />
-          <div className="next-round-text">{labels.overlays.nextRound}</div>
-        </>
-      )}
+      {effects.curse && <SpecialEffectOverlay type="curse" title="123" />}
+      {effects.happy && <SpecialEffectOverlay type="happy" title="456" />}
+      {effects.happier && <SpecialEffectOverlay type="happier" title="ゾロ目" />}
+      {effects.happiest && <SpecialEffectOverlay type="happiest" title="ピンゾロ" />}
+      {effects.finish && <CutInEffect type="finish" title={labels.overlays.finish} />}
+      {effects.nextRound && <CutInEffect type="nextRound" title={labels.overlays.nextRound} />}
     </>
   );
 }
 
-function SpecialEffectOverlay({
-  type,
-  title,
-  subtitle,
-}: {
-  type: SpecialEffectType;
-  title: string;
-  subtitle: string;
-}) {
+function SpecialEffectOverlay({ type, title }: { type: SpecialEffectType; title: string }) {
   return (
     <div className={`special-effect-overlay ${type}-effect`}>
       <div className="effect-burst" />
       <div className="effect-rings" />
       <div className="effect-card">
         <span className="effect-title">{title}</span>
-        <span className="effect-subtitle">{subtitle}</span>
       </div>
       <div className="effect-particles" />
+    </div>
+  );
+}
+
+function CutInEffect({ type, title }: { type: CutInEffectType; title: string }) {
+  return (
+    <div className={`cut-in-overlay ${type}-cut-in`}>
+      <div className="cut-in-slash" />
+      <div className="cut-in-text">{title}</div>
     </div>
   );
 }

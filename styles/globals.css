@@ -135,16 +135,13 @@ button:disabled {
 }
 
 .special-effect-overlay,
-.finish-overlay,
-.next-round-overlay,
-.next-round-text {
+.cut-in-overlay {
   position: fixed;
   pointer-events: none;
 }
 
 .special-effect-overlay,
-.finish-overlay,
-.next-round-overlay {
+.cut-in-overlay {
   inset: 0;
 }
 
@@ -154,14 +151,6 @@ button:disabled {
   place-items: center;
   overflow: hidden;
   isolation: isolate;
-}
-
-.finish-overlay {
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.5);
 }
 
 .curse-effect {
@@ -271,7 +260,7 @@ button:disabled {
 
 .effect-card {
   display: grid;
-  gap: 4px;
+  place-items: center;
   min-width: min(76vw, 320px);
   padding: 22px 28px;
   border-radius: 8px;
@@ -303,12 +292,6 @@ button:disabled {
   letter-spacing: 0;
 }
 
-.effect-subtitle {
-  font-size: clamp(1rem, 4vw, 1.45rem);
-  font-weight: 1000;
-  letter-spacing: 0.08em;
-}
-
 .effect-particles {
   position: absolute;
   width: min(86vw, 520px);
@@ -337,31 +320,83 @@ button:disabled {
     radial-gradient(circle at 50% 12%, #9cff88 0 4px, transparent 5px);
 }
 
-.drop-text {
-  color: #ef4444;
-  font-size: 4rem;
-  font-weight: 900;
-  opacity: 0;
-  text-shadow: -1px -1px 0 white, 1px -1px 0 white, -1px 1px 0 white, 1px 1px 0 white;
-  transform: translateY(-100px);
-  animation: drop 0.8s ease-out forwards;
+.cut-in-overlay {
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    linear-gradient(120deg, rgba(0, 0, 0, 0.72), rgba(10, 15, 25, 0.34) 48%, rgba(0, 0, 0, 0.72)),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 16px);
+  isolation: isolate;
+  animation: cutInBackdrop 0.42s ease-out both;
 }
 
-.next-round-overlay {
-  z-index: 9998;
-  background: rgba(255, 255, 255, 0.5);
+.cut-in-overlay::before,
+.cut-in-overlay::after {
+  position: absolute;
+  left: -18vw;
+  z-index: -1;
+  width: 136vw;
+  height: clamp(58px, 14vw, 118px);
+  content: "";
+  transform: rotate(-11deg) translateX(-115%);
+  animation: cutInBand 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.next-round-text {
-  top: 50%;
-  left: 50%;
-  z-index: 9999;
-  color: #1d4ed8;
-  font-size: 4rem;
-  font-weight: 900;
-  text-shadow: 2px 2px 0 white, -2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white;
-  transform: translate(-50%, -50%) rotate(-20deg);
-  animation: nextFade 1s ease-out;
+.cut-in-overlay::before {
+  top: 34%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.45), transparent);
+  animation-delay: 0.04s;
+}
+
+.cut-in-overlay::after {
+  top: 53%;
+  height: clamp(38px, 9vw, 76px);
+  opacity: 0.78;
+  animation-delay: 0.12s;
+}
+
+.cut-in-slash {
+  position: absolute;
+  width: 140vw;
+  height: clamp(96px, 18vw, 168px);
+  transform: rotate(-11deg) translateX(-120%);
+  animation: cutInBand 0.56s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.finish-cut-in .cut-in-slash,
+.finish-cut-in::after {
+  background: linear-gradient(90deg, transparent, #111827 16%, #dc2626 48%, #f97316 64%, #111827 84%, transparent);
+  box-shadow: 0 0 40px rgba(220, 38, 38, 0.58);
+}
+
+.nextRound-cut-in .cut-in-slash,
+.nextRound-cut-in::after {
+  background: linear-gradient(90deg, transparent, #0f172a 16%, #2563eb 48%, #22d3ee 64%, #0f172a 84%, transparent);
+  box-shadow: 0 0 40px rgba(37, 99, 235, 0.58);
+}
+
+.cut-in-text {
+  position: relative;
+  color: #fff;
+  font-size: clamp(3.2rem, 15vw, 7.5rem);
+  font-weight: 1000;
+  line-height: 0.9;
+  letter-spacing: 0;
+  text-shadow: 0 5px 0 #111827, 0 0 26px rgba(255, 255, 255, 0.72);
+  transform: skew(-10deg) scale(0.76);
+  animation: cutInText 0.78s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.finish-cut-in .cut-in-text {
+  color: #fee2e2;
+  text-shadow: 0 5px 0 #7f1d1d, 0 0 30px rgba(248, 113, 113, 0.9);
+}
+
+.nextRound-cut-in .cut-in-text {
+  color: #dbeafe;
+  text-shadow: 0 5px 0 #1e3a8a, 0 0 30px rgba(34, 211, 238, 0.85);
 }
 
 @keyframes curseSpin {
@@ -452,28 +487,33 @@ button:disabled {
   }
 }
 
-@keyframes drop {
+@keyframes cutInBackdrop {
   0% {
     opacity: 0;
-    transform: translateY(-100px);
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
-@keyframes nextFade {
+@keyframes cutInBand {
   0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) rotate(-20deg) scale(0.8);
-  }
-  50% {
-    opacity: 1;
-    transform: translate(-50%, -50%) rotate(-20deg) scale(1.2);
+    transform: rotate(-11deg) translateX(-120%);
   }
   100% {
+    transform: rotate(-11deg) translateX(0);
+  }
+}
+
+@keyframes cutInText {
+  0% {
     opacity: 0;
-    transform: translate(-50%, -50%) rotate(-20deg) scale(0.8);
+    transform: skew(-10deg) translateX(-18vw) scale(0.76);
+    filter: blur(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: skew(-10deg) translateX(0) scale(1);
+    filter: blur(0);
   }
 }

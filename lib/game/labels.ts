@@ -44,7 +44,7 @@ export const labels = {
     dice6: "6",
     special123: "123",
     special456: "456",
-    specialTriple: "ぞろ目",
+    specialTriple: "ゾロ目",
     special111: "ピンゾロ",
   },
   statuses: {

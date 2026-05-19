@@ -131,7 +131,7 @@ function getDisplayResult(selectedResult: number) {
   if (selectedResult <= -100) return "123";
   if (selectedResult < 100) return String(selectedResult);
   if (selectedResult < 200) return "456";
-  if (selectedResult < 300) return "ぞろ目";
+  if (selectedResult < 300) return "ゾロ目";
   return "ピンゾロ";
 }
 
