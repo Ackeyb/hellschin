@@ -41,13 +41,14 @@ test("creates an initial game state from setup", () => {
     state.players.map((player) => ({
       name: player.name,
       result: player.result,
+      displayResult: player.displayResult,
       canPlay: player.canPlay,
       status: player.status,
     })),
     [
-      { name: "Alice", result: null, canPlay: true, status: "battle" },
-      { name: "Bob", result: null, canPlay: true, status: "battle" },
-      { name: "Carol", result: null, canPlay: true, status: "battle" },
+      { name: "Alice", result: null, displayResult: null, canPlay: true, status: "battle" },
+      { name: "Bob", result: null, displayResult: null, canPlay: true, status: "battle" },
+      { name: "Carol", result: null, displayResult: null, canPlay: true, status: "battle" },
     ],
   );
 });
@@ -57,6 +58,7 @@ test("advances to the next player while a round is still running", () => {
 
   assert.equal(outcome.state.turn, 1);
   assert.equal(outcome.state.players[0].result, 1);
+  assert.equal(outcome.state.players[0].displayResult, "3");
   assert.equal(outcome.state.players[0].status, "scored");
   assert.equal(outcome.state.gameOver, false);
   assert.deepEqual(outcome.effects, []);
@@ -131,13 +133,30 @@ test("revives everyone when 123 revive rule is active", () => {
     outcome.state.players.map((player) => ({
       canPlay: player.canPlay,
       result: player.result,
+      displayResult: player.displayResult,
       status: player.status,
     })),
     [
-      { canPlay: true, result: 0, status: "revived" },
-      { canPlay: true, result: 0, status: "revived" },
+      { canPlay: true, result: 0, displayResult: null, status: "continue" },
+      { canPlay: true, result: 0, displayResult: null, status: "continue" },
     ],
   );
+});
+
+test("marks results at or below cutoff as zako", () => {
+  const outcome = applyResult(createState(), 2);
+
+  assert.equal(outcome.state.players[0].result, 0);
+  assert.equal(outcome.state.players[0].displayResult, "2");
+  assert.equal(outcome.state.players[0].status, "zako");
+});
+
+test("shows special result labels while keeping internal scores", () => {
+  const outcome = applyResult(createState(), 206);
+
+  assert.equal(outcome.state.players[0].result, 204);
+  assert.equal(outcome.state.players[0].displayResult, "ぞろ目");
+  assert.equal(outcome.state.players[0].status, "scored");
 });
 
 test("finishes immediately when 123 end rule reaches cup limit", () => {

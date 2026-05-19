@@ -13,7 +13,7 @@ export default function GameSettingsStrip({ addPerRound, cutOff }: GameSettingsS
         {labels.fields.addPerRound}: <strong>{addPerRound}</strong>
       </span>
       <span>
-        {labels.fields.cutOff}: <strong>{cutOff}</strong>
+        {labels.fields.cutOff}: <strong>{cutOff}</strong> 以下
       </span>
     </section>
   );

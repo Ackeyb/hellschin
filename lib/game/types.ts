@@ -25,21 +25,17 @@ export type GameSetup = {
 
 export type PlayerStatus =
   | "battle"
-  | "noResult"
+  | "zako"
   | "scored"
-  | "special123"
-  | "special456"
-  | "specialTriple"
-  | "special111"
   | "winner"
   | "loser"
-  | "continue"
-  | "revived";
+  | "continue";
 
 export type Player = {
   id: string;
   name: string;
   result: number | null;
+  displayResult: string | null;
   canPlay: boolean;
   status: PlayerStatus;
 };

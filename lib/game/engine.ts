@@ -11,6 +11,7 @@ export function createInitialGameState(setup: {
       id: `${index}-${name}`,
       name,
       result: null,
+      displayResult: null,
       canPlay: true,
       status: "battle",
     })),
@@ -50,7 +51,8 @@ export function applyResult(state: GameState, selectedResult: number): ApplyResu
   if (!player) return { state, effects: [], sound: null };
 
   player.result = selectedResult - state.cutOff;
-  player.status = getStatusForResult(selectedResult);
+  player.displayResult = getDisplayResult(selectedResult);
+  player.status = getStatusForResult(selectedResult, state.cutOff);
 
   if (selectedResult <= -100) {
     effects.push("shadow");
@@ -69,7 +71,8 @@ export function applyResult(state: GameState, selectedResult: number): ApplyResu
         ...item,
         canPlay: true,
         result: 0,
-        status: "revived",
+        displayResult: null,
+        status: "continue",
       }));
       return {
         state: { ...nextState, turn: 0 },
@@ -117,13 +120,17 @@ export function applyResult(state: GameState, selectedResult: number): ApplyResu
   return { state: nextState, effects, sound };
 }
 
-function getStatusForResult(selectedResult: number): PlayerStatus {
-  if (selectedResult <= -100) return "special123";
-  if (selectedResult <= 0) return "noResult";
-  if (selectedResult < 100) return "scored";
-  if (selectedResult < 200) return "special456";
-  if (selectedResult < 300) return "specialTriple";
-  return "special111";
+function getStatusForResult(selectedResult: number, cutOff: number): PlayerStatus {
+  if (selectedResult >= 100) return "scored";
+  return selectedResult > cutOff ? "scored" : "zako";
+}
+
+function getDisplayResult(selectedResult: number) {
+  if (selectedResult <= -100) return "123";
+  if (selectedResult < 100) return String(selectedResult);
+  if (selectedResult < 200) return "456";
+  if (selectedResult < 300) return "ぞろ目";
+  return "ピンゾロ";
 }
 
 function settleLoseModeRound(state: GameState): GameState {

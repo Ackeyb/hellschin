@@ -19,7 +19,9 @@ export default function PlayerList({ players, currentPlayerId }: PlayerListProps
           <span className={`${styles.statusPill} ${styles[player.status] ?? ""}`}>
             {labels.statuses[player.status]}
           </span>
-          {player.result !== null && <span className={styles.playerResult}>{player.result}</span>}
+          {player.displayResult !== null && (
+            <span className={styles.playerResult}>{player.displayResult}</span>
+          )}
         </div>
       ))}
     </section>

@@ -16,7 +16,10 @@ export default function GameHeader({ mode, round, cups }: GameHeaderProps) {
         <span>{mode === "lose" ? labels.statuses.loser : labels.statuses.winner}</span>
         <strong>{cups}</strong>
         <span>{labels.fields.cupsUnit}</span>
-        <small>{cups / 5} キャッシュ</small>
+        <small>
+          {labels.fields.capUnit}
+          {cups / 5}
+        </small>
       </div>
     </header>
   );
