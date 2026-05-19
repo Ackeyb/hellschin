@@ -76,6 +76,16 @@ button:disabled {
 
 .player-dialog {
   width: min(100%, 380px);
+  display: grid;
+  gap: 14px;
+}
+
+.player-dialog .dialog-title {
+  margin-bottom: 0;
+}
+
+.player-dialog .dialog-actions {
+  margin-top: 2px;
 }
 
 .dialog-title {
@@ -104,7 +114,7 @@ button:disabled {
 
 .dialog-field {
   display: grid;
-  gap: 6px;
+  gap: 8px;
   color: #6b3a44;
   font-weight: 800;
 }
@@ -120,12 +130,11 @@ button:disabled {
 
 .dialog-field-list {
   display: grid;
-  gap: 8px;
-  margin-top: 12px;
+  gap: 10px;
+  margin-top: 0;
 }
 
-.rainbow-overlay,
-.shadow-overlay,
+.special-effect-overlay,
 .finish-overlay,
 .next-round-overlay,
 .next-round-text {
@@ -133,27 +142,18 @@ button:disabled {
   pointer-events: none;
 }
 
-.rainbow-overlay,
-.shadow-overlay,
+.special-effect-overlay,
 .finish-overlay,
 .next-round-overlay {
   inset: 0;
 }
 
-.rainbow-overlay {
+.special-effect-overlay {
   z-index: 9998;
-  background: linear-gradient(270deg, red, orange, yellow, green, blue, indigo, violet);
-  background-size: 1400% 1400%;
-  opacity: 0.78;
-  animation: rainbow 2s linear infinite;
-}
-
-.shadow-overlay {
-  z-index: 9998;
-  background: linear-gradient(180deg, black, gray);
-  background-size: 1400% 1400%;
-  opacity: 0.78;
-  animation: shadow 2s linear infinite;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  isolation: isolate;
 }
 
 .finish-overlay {
@@ -162,6 +162,179 @@ button:disabled {
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.5);
+}
+
+.curse-effect {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(95, 15, 126, 0.6), transparent 18%),
+    radial-gradient(circle at 20% 20%, rgba(35, 0, 45, 0.95), transparent 34%),
+    linear-gradient(180deg, #050108, #1b0925 55%, #050108);
+}
+
+.happy-effect {
+  background:
+    radial-gradient(circle at 50% 46%, rgba(255, 255, 255, 0.88), transparent 12%),
+    conic-gradient(from 40deg, #fff7ad, #ff9fce, #8fe8ff, #b8ffb0, #fff7ad);
+}
+
+.happier-effect {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.95), transparent 16%),
+    conic-gradient(from 20deg, #ffffff, #ffe76a, #ff72bd, #62d9ff, #9dff87, #ffffff);
+}
+
+.happiest-effect {
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 1), transparent 18%),
+    conic-gradient(from 0deg, #ffffff, #ffe45c, #ff4fb6, #6c63ff, #4df2ff, #8dff72, #ffffff);
+}
+
+.curse-effect::before,
+.happy-effect::before,
+.happier-effect::before,
+.happiest-effect::before,
+.curse-effect::after,
+.happy-effect::after,
+.happier-effect::after,
+.happiest-effect::after {
+  position: absolute;
+  inset: -20%;
+  z-index: -1;
+  content: "";
+}
+
+.curse-effect::before {
+  background:
+    repeating-radial-gradient(circle at 50% 50%, rgba(150, 74, 183, 0.22) 0 2px, transparent 2px 18px),
+    linear-gradient(90deg, transparent, rgba(120, 0, 180, 0.2), transparent);
+  filter: blur(1px);
+  animation: curseSpin 2.8s linear infinite;
+}
+
+.curse-effect::after {
+  background: radial-gradient(circle, transparent 22%, rgba(0, 0, 0, 0.72) 64%);
+  animation: cursePulse 1.4s ease-in-out infinite;
+}
+
+.happy-effect::before,
+.happier-effect::before,
+.happiest-effect::before {
+  background: repeating-conic-gradient(from 0deg, rgba(255, 255, 255, 0.7) 0deg 8deg, transparent 8deg 18deg);
+  animation: joySpin 4s linear infinite;
+}
+
+.happy-effect::after,
+.happier-effect::after,
+.happiest-effect::after {
+  background:
+    radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.9) 0 0.45rem, transparent 0.5rem),
+    radial-gradient(circle at 76% 26%, rgba(255, 255, 255, 0.85) 0 0.35rem, transparent 0.4rem),
+    radial-gradient(circle at 30% 76%, rgba(255, 255, 255, 0.8) 0 0.42rem, transparent 0.48rem),
+    radial-gradient(circle at 82% 72%, rgba(255, 255, 255, 0.86) 0 0.5rem, transparent 0.56rem);
+  animation: sparkleDrift 1.8s ease-in-out infinite alternate;
+}
+
+.effect-burst {
+  position: absolute;
+  width: min(76vw, 460px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  opacity: 0.82;
+  transform: scale(0.25);
+  animation: burstIn 0.85s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.curse-effect .effect-burst {
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.5), rgba(24, 6, 42, 0) 68%);
+  filter: blur(8px);
+}
+
+.happy-effect .effect-burst,
+.happier-effect .effect-burst,
+.happiest-effect .effect-burst {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95), rgba(255, 224, 102, 0.55), transparent 68%);
+}
+
+.effect-rings {
+  position: absolute;
+  width: min(72vw, 430px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.72);
+  animation: ringOut 1.35s ease-out infinite;
+}
+
+.curse-effect .effect-rings {
+  border-color: rgba(216, 180, 254, 0.38);
+  box-shadow: inset 0 0 22px rgba(30, 0, 45, 0.9), 0 0 28px rgba(139, 92, 246, 0.5);
+}
+
+.effect-card {
+  display: grid;
+  gap: 4px;
+  min-width: min(76vw, 320px);
+  padding: 22px 28px;
+  border-radius: 8px;
+  text-align: center;
+  transform: scale(0.72) rotate(-4deg);
+  animation: cardImpact 0.72s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.curse-effect .effect-card {
+  color: #f5d0fe;
+  background: rgba(9, 3, 15, 0.72);
+  border: 1px solid rgba(216, 180, 254, 0.45);
+  box-shadow: 0 0 44px rgba(126, 34, 206, 0.65), inset 0 0 30px rgba(0, 0, 0, 0.8);
+}
+
+.happy-effect .effect-card,
+.happier-effect .effect-card,
+.happiest-effect .effect-card {
+  color: #6b2440;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 16px 60px rgba(255, 86, 155, 0.42);
+}
+
+.effect-title {
+  font-size: clamp(3rem, 12vw, 5.5rem);
+  font-weight: 1000;
+  line-height: 0.95;
+  letter-spacing: 0;
+}
+
+.effect-subtitle {
+  font-size: clamp(1rem, 4vw, 1.45rem);
+  font-weight: 1000;
+  letter-spacing: 0.08em;
+}
+
+.effect-particles {
+  position: absolute;
+  width: min(86vw, 520px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  animation: particlePop 1.35s ease-out forwards;
+}
+
+.curse-effect .effect-particles {
+  background:
+    radial-gradient(circle at 20% 30%, #a855f7 0 3px, transparent 4px),
+    radial-gradient(circle at 74% 34%, #7e22ce 0 4px, transparent 5px),
+    radial-gradient(circle at 36% 82%, #c084fc 0 3px, transparent 4px),
+    radial-gradient(circle at 86% 78%, #581c87 0 5px, transparent 6px);
+  filter: blur(0.5px);
+}
+
+.happy-effect .effect-particles,
+.happier-effect .effect-particles,
+.happiest-effect .effect-particles {
+  background:
+    radial-gradient(circle at 20% 30%, #ffffff 0 4px, transparent 5px),
+    radial-gradient(circle at 74% 34%, #fff176 0 5px, transparent 6px),
+    radial-gradient(circle at 36% 82%, #ff72bd 0 4px, transparent 5px),
+    radial-gradient(circle at 86% 78%, #55e7ff 0 5px, transparent 6px),
+    radial-gradient(circle at 50% 12%, #9cff88 0 4px, transparent 5px);
 }
 
 .drop-text {
@@ -191,21 +364,91 @@ button:disabled {
   animation: nextFade 1s ease-out;
 }
 
-@keyframes rainbow {
+@keyframes curseSpin {
   0% {
-    background-position: 0% 50%;
+    transform: rotate(0deg) scale(1);
   }
   100% {
-    background-position: 100% 50%;
+    transform: rotate(360deg) scale(1.05);
   }
 }
 
-@keyframes shadow {
+@keyframes cursePulse {
+  0%,
+  100% {
+    opacity: 0.72;
+  }
+  50% {
+    opacity: 0.92;
+  }
+}
+
+@keyframes joySpin {
   0% {
-    background-position: 50% 0%;
+    transform: rotate(0deg) scale(1);
   }
   100% {
-    background-position: 50% 100%;
+    transform: rotate(360deg) scale(1.04);
+  }
+}
+
+@keyframes sparkleDrift {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    transform: translateY(-18px) scale(1.05);
+  }
+}
+
+@keyframes burstIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.22);
+  }
+  100% {
+    opacity: 0.88;
+    transform: scale(1);
+  }
+}
+
+@keyframes ringOut {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.4);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.22);
+  }
+}
+
+@keyframes cardImpact {
+  0% {
+    opacity: 0;
+    transform: scale(0.72) rotate(-5deg);
+  }
+  70% {
+    opacity: 1;
+    transform: scale(1.08) rotate(1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes particlePop {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.18) rotate(22deg);
   }
 }
 

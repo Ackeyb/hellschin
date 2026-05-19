@@ -106,17 +106,17 @@ test("applies special result cup multipliers and effects", () => {
   const result456 = applyResult(state, 106);
   assert.equal(result456.state.cups, 6);
   assert.equal(result456.sound, "456");
-  assert.deepEqual(result456.effects, ["rainbow"]);
+  assert.deepEqual(result456.effects, ["happy"]);
 
   const resultTriple = applyResult(state, 206);
   assert.equal(resultTriple.state.cups, 9);
   assert.equal(resultTriple.sound, "triple");
-  assert.deepEqual(resultTriple.effects, ["rainbow"]);
+  assert.deepEqual(resultTriple.effects, ["happier"]);
 
   const result111 = applyResult(state, 306);
   assert.equal(result111.state.cups, 15);
   assert.equal(result111.sound, "111");
-  assert.deepEqual(result111.effects, ["rainbow"]);
+  assert.deepEqual(result111.effects, ["happiest"]);
 });
 
 test("revives everyone when 123 revive rule is active", () => {
@@ -127,7 +127,7 @@ test("revives everyone when 123 revive rule is active", () => {
   const outcome = applyResult(state, -100);
 
   assert.equal(outcome.sound, "123");
-  assert.deepEqual(outcome.effects, ["shadow"]);
+  assert.deepEqual(outcome.effects, ["curse"]);
   assert.equal(outcome.state.turn, 0);
   assert.deepEqual(
     outcome.state.players.map((player) => ({
@@ -167,5 +167,5 @@ test("finishes immediately when 123 end rule reaches cup limit", () => {
 
   assert.equal(outcome.state.gameOver, true);
   assert.equal(outcome.sound, "123");
-  assert.deepEqual(outcome.effects, ["shadow", "finish"]);
+  assert.deepEqual(outcome.effects, ["curse", "finish"]);
 });

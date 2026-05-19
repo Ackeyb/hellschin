@@ -47,7 +47,7 @@ export default function GameSettingsSection({
         />
         <NumericField
           label={labels.fields.cutOff}
-          unit="以上"
+          unit="以下"
           value={config.cutOff}
           onChange={(value) => onConfigChange("cutOff", value)}
         />

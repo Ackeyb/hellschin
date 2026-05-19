@@ -55,7 +55,7 @@ export function applyResult(state: GameState, selectedResult: number): ApplyResu
   player.status = getStatusForResult(selectedResult, state.cutOff);
 
   if (selectedResult <= -100) {
-    effects.push("shadow");
+    effects.push("curse");
     sound = "123";
 
     if (
@@ -83,15 +83,17 @@ export function applyResult(state: GameState, selectedResult: number): ApplyResu
   }
 
   if (selectedResult >= 100) {
-    effects.push("rainbow");
     if (selectedResult < 200) {
       sound = "456";
+      effects.push("happy");
       nextState.cups *= 2;
     } else if (selectedResult < 300) {
       sound = "triple";
+      effects.push("happier");
       nextState.cups *= 3;
     } else {
       sound = "111";
+      effects.push("happiest");
       nextState.cups *= 5;
     }
   }

@@ -57,8 +57,10 @@ export default function GamePage({ mode }: GamePageProps) {
     setSelectedResult(null);
 
     if (outcome.sound) sounds.play(outcome.sound);
-    if (outcome.effects.includes("rainbow")) showTemporaryEffect("rainbow", 2400);
-    if (outcome.effects.includes("shadow")) showTemporaryEffect("shadow", 2400);
+    if (outcome.effects.includes("curse")) showTemporaryEffect("curse", 2800);
+    if (outcome.effects.includes("happy")) showTemporaryEffect("happy", 2200);
+    if (outcome.effects.includes("happier")) showTemporaryEffect("happier", 2600);
+    if (outcome.effects.includes("happiest")) showTemporaryEffect("happiest", 3200);
     if (outcome.effects.includes("finish")) showTemporaryEffect("finish", 3000);
     if (outcome.effects.includes("nextRound")) showTemporaryEffect("nextRound", 1500);
   };

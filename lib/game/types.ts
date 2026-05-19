@@ -63,7 +63,14 @@ export type ResultChoice = {
   };
 };
 
-export type GameEffect = "none" | "finish" | "nextRound" | "rainbow" | "shadow";
+export type GameEffect =
+  | "none"
+  | "finish"
+  | "nextRound"
+  | "curse"
+  | "happy"
+  | "happier"
+  | "happiest";
 
 export type ApplyResultOutcome = {
   state: GameState;
