@@ -1,8 +1,11 @@
 .homeShell {
+  display: grid;
+  align-content: start;
+  gap: 10px;
   width: min(100%, 480px);
   min-height: 100vh;
   margin: 0 auto;
-  padding: 20px;
+  padding: 12px 18px 14px;
   background: #fde7ec;
 }
 
@@ -13,39 +16,40 @@
 .homeHeader h1 {
   margin: 0;
   color: #d91f4d;
-  font-size: 1.45rem;
+  font-size: 1.25rem;
   letter-spacing: 0;
 }
 
 .homeHeader p {
-  margin: 4px 0 0;
+  margin: 2px 0 0;
   color: #6b3a44;
+  font-size: 0.92rem;
   font-weight: 700;
 }
 
 .panel {
-  padding: 16px;
+  padding: 10px 12px;
   border: 1px solid #f3a1b3;
   border-radius: 8px;
   background: #fff;
 }
 
 .sectionHeading {
-  margin-bottom: 12px;
-  padding-bottom: 6px;
+  margin-bottom: 8px;
+  padding-bottom: 4px;
   border-bottom: 1px dashed #f3a1b3;
   color: #6b3a44;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 800;
   text-align: center;
 }
 
 .smallHeading {
-  margin-bottom: 8px;
-  padding-bottom: 6px;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
   border-bottom: 1px dashed #f3a1b3;
   color: #6b3a44;
-  font-size: 1rem;
+  font-size: 0.94rem;
   font-weight: 800;
 }
 
@@ -53,17 +57,17 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 8px;
-  min-height: 36px;
-  margin-top: 12px;
+  gap: 6px;
+  min-height: 30px;
+  margin-top: 8px;
 }
 
 .playerChip {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  min-height: 32px;
-  padding: 4px 8px 4px 12px;
+  gap: 6px;
+  min-height: 28px;
+  padding: 3px 8px 3px 10px;
   border: 1px solid #f3a1b3;
   border-radius: 999px;
   color: #6b3a44;
@@ -88,7 +92,8 @@
 
 .fieldStack {
   display: grid;
-  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .numericField,
@@ -101,25 +106,27 @@
 }
 
 .numericField {
+  flex-direction: column;
   justify-content: space-between;
-  min-height: 52px;
-  padding: 10px 12px;
+  min-height: 78px;
+  padding: 7px 8px;
   border-radius: 8px;
   background: #fff;
   box-shadow: 0 1px 5px rgba(233, 107, 138, 0.16);
 }
 
 .numericField > span:first-child {
-  flex: 1;
-  min-width: 120px;
+  min-width: 0;
   color: #6b3a44;
+  font-size: 0.84rem;
   font-weight: 800;
+  text-align: center;
 }
 
 .configInput {
-  width: 76px;
-  height: 36px;
-  padding: 6px 10px;
+  width: 68px;
+  height: 32px;
+  padding: 4px 8px;
   border: 1px solid #f3a1b3;
   border-radius: 999px;
   color: #6b3a44;
@@ -129,8 +136,8 @@
 }
 
 .ruleBox {
-  margin-top: 16px;
-  padding: 14px;
+  margin-top: 8px;
+  padding: 8px;
   border: 1px solid #f3a1b3;
   border-radius: 8px;
   background: #fff6f8;
@@ -139,13 +146,20 @@
 .checkRow,
 .radioRow,
 .nestedField {
-  min-height: 42px;
-  margin-top: 8px;
-  padding: 8px 10px;
+  min-height: 32px;
+  margin-top: 5px;
+  padding: 5px 8px;
   border-radius: 8px;
   background: #fff;
   color: #6b3a44;
   font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.ruleChoices {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .disabled {
@@ -153,18 +167,19 @@
 }
 
 .nestedField {
-  margin-left: 24px;
+  justify-content: center;
+  margin-left: 0;
 }
 
 .startActions {
   display: grid;
-  gap: 10px;
+  gap: 7px;
 }
 
 .startButton {
   width: 100%;
-  min-height: 54px;
-  padding: 14px 18px;
+  min-height: 42px;
+  padding: 8px 16px;
   border: none;
   border-radius: 999px;
   box-shadow: 0 5px 0 rgba(0, 0, 0, 0.14);
@@ -184,6 +199,30 @@
 
 @media (max-width: 420px) {
   .homeShell {
-    padding: 14px;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .fieldStack {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .numericField {
+    min-height: 80px;
+    padding: 7px 5px;
+  }
+
+  .numericField > span:first-child {
+    font-size: 0.78rem;
+  }
+
+  .configInput {
+    width: 58px;
+  }
+
+  .ruleChoices {
+    grid-template-columns: 1fr;
+    gap: 0;
   }
 }

@@ -31,27 +31,29 @@ export default function Rule123Settings({
         <span>{labels.rule123Options.enable}</span>
       </label>
 
-      <label className={useRule123 ? styles.radioRow : `${styles.radioRow} ${styles.disabled}`}>
-        <input
-          checked={rule123Type === "revive"}
-          disabled={!useRule123}
-          name="rule123"
-          onChange={() => onRule123TypeChange("revive")}
-          type="radio"
-        />
-        <span>{labels.rule123Options.revive}</span>
-      </label>
+      <div className={styles.ruleChoices}>
+        <label className={useRule123 ? styles.radioRow : `${styles.radioRow} ${styles.disabled}`}>
+          <input
+            checked={rule123Type === "revive"}
+            disabled={!useRule123}
+            name="rule123"
+            onChange={() => onRule123TypeChange("revive")}
+            type="radio"
+          />
+          <span>{labels.rule123Options.revive}</span>
+        </label>
 
-      <label className={useRule123 ? styles.radioRow : `${styles.radioRow} ${styles.disabled}`}>
-        <input
-          checked={rule123Type === "end"}
-          disabled={!useRule123}
-          name="rule123"
-          onChange={() => onRule123TypeChange("end")}
-          type="radio"
-        />
-        <span>{labels.rule123Options.end}</span>
-      </label>
+        <label className={useRule123 ? styles.radioRow : `${styles.radioRow} ${styles.disabled}`}>
+          <input
+            checked={rule123Type === "end"}
+            disabled={!useRule123}
+            name="rule123"
+            onChange={() => onRule123TypeChange("end")}
+            type="radio"
+          />
+          <span>{labels.rule123Options.end}</span>
+        </label>
+      </div>
 
       <div
         className={
