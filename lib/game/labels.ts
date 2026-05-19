@@ -28,6 +28,11 @@ export const labels = {
     confirm: "はい",
     close: "OK",
   },
+  rule123Options: {
+    enable: "123 特別ルールを有効にする",
+    revive: "123 が出たら全員復活",
+    end: "123 が出たら終了",
+  },
   resultChoices: {
     none: "出目なし",
     dice1: "1",
@@ -80,6 +85,7 @@ export const textLocations = {
   sections: "トップページ内の各セクション見出し",
   fields: "設定フォーム・ゲーム画面の項目名",
   actions: "ボタン文言",
+  rule123Options: "123 特別ルール設定の選択肢",
   resultChoices: "出目選択ボタンのラベル/代替テキスト",
   statuses: "プレイヤー一覧に表示する状態名",
   messages: "入力エラー、確認ダイアログ、設定読み込み失敗時の文言",

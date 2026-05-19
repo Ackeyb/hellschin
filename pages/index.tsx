@@ -1,4 +1,9 @@
 import ErrorDialog from "@/components/ErrorDialog";
+import GameSettingsSection from "@/components/home/GameSettingsSection";
+import HomeHeader from "@/components/home/HomeHeader";
+import PlayerDialog from "@/components/home/PlayerDialog";
+import PlayerSection from "@/components/home/PlayerSection";
+import StartActions from "@/components/home/StartActions";
 import { labels } from "@/lib/game/labels";
 import { loadResumePlayerNames, saveGameSetup } from "@/lib/game/storage";
 import type { GameMode, Rule123 } from "@/lib/game/types";
@@ -50,6 +55,40 @@ export default function Home() {
     setPlayers((prev) => resizePlayers(prev, count));
   };
 
+  const changePlayerName = (index: number, name: string) => {
+    setPlayers((prev) => {
+      const next = [...prev];
+      next[index] = name;
+      return next;
+    });
+  };
+
+  const changeRule123Enabled = (enabled: boolean) => {
+    setUseRule123(enabled);
+    if (!enabled) {
+      setRule123Type("revive");
+      setEndCupLimit("");
+    }
+  };
+
+  const changeRule123Type = (type: Rule123["type"]) => {
+    setRule123Type(type);
+    if (type === "revive") setEndCupLimit("");
+  };
+
+  const changeEndCupLimit = (value: string) => {
+    if (/^\d*$/.test(value)) setEndCupLimit(value);
+  };
+
+  const confirmPlayers = () => {
+    try {
+      validatePlayers(players);
+      setIsPlayerDialogOpen(false);
+    } catch (error) {
+      if (error instanceof Error) setErrorMessage(error.message);
+    }
+  };
+
   const startGame = (mode: GameMode) => {
     try {
       const validPlayers = validatePlayers(players);
@@ -83,191 +122,36 @@ export default function Home() {
 
   return (
     <main className="home-shell">
-      <header className="home-header">
-        <h1>{labels.appTitle}</h1>
-        <p>{labels.appSubtitle}</p>
-      </header>
-
-      <section className="panel" aria-labelledby="players-heading">
-        <div className="section-heading" id="players-heading">
-          {labels.sections.players}
-        </div>
-        <button className="primary-button wide-button" onClick={openPlayerDialog} type="button">
-          {labels.actions.addPlayers}
-        </button>
-        <div className="player-chip-list">
-          {players.length === 0 ? (
-            <span className="empty-message">{labels.messages.noPlayers}</span>
-          ) : (
-            players.map((player, index) => (
-              <span className="player-chip" key={`${player}-${index}`}>
-                {player}
-                <button
-                  aria-label={`${player} remove`}
-                  onClick={() => setPlayers((prev) => prev.filter((_, itemIndex) => itemIndex !== index))}
-                  type="button"
-                >
-                  x
-                </button>
-              </span>
-            ))
-          )}
-        </div>
-      </section>
-
-      <section className="panel" aria-labelledby="settings-heading">
-        <div className="section-heading" id="settings-heading">
-          {labels.sections.gameSettings}
-        </div>
-
-        <div className="field-stack">
-          <NumericField
-            label={labels.fields.startCups}
-            unit={labels.fields.cupsUnit}
-            value={config.startCups}
-            onChange={(value) => updateNumericConfig("startCups", value)}
-          />
-          <NumericField
-            label={labels.fields.addPerRound}
-            unit={labels.fields.cupsUnit}
-            value={config.addPerRound}
-            onChange={(value) => updateNumericConfig("addPerRound", value)}
-          />
-          <NumericField
-            label={labels.fields.cutOff}
-            unit="以上"
-            value={config.cutOff}
-            onChange={(value) => updateNumericConfig("cutOff", value)}
-          />
-        </div>
-
-        <div className="rule-box">
-          <div className="section-heading small">{labels.sections.rule123}</div>
-          <label className="check-row">
-            <input
-              checked={useRule123}
-              onChange={(event) => {
-                setUseRule123(event.target.checked);
-                if (!event.target.checked) {
-                  setRule123Type("revive");
-                  setEndCupLimit("");
-                }
-              }}
-              type="checkbox"
-            />
-            <span>123 特別ルールを有効にする</span>
-          </label>
-
-          <label className={useRule123 ? "radio-row" : "radio-row disabled"}>
-            <input
-              checked={rule123Type === "revive"}
-              disabled={!useRule123}
-              name="rule123"
-              onChange={() => {
-                setRule123Type("revive");
-                setEndCupLimit("");
-              }}
-              type="radio"
-            />
-            <span>123 が出たら全員復活</span>
-          </label>
-
-          <label className={useRule123 ? "radio-row" : "radio-row disabled"}>
-            <input
-              checked={rule123Type === "end"}
-              disabled={!useRule123}
-              name="rule123"
-              onChange={() => setRule123Type("end")}
-              type="radio"
-            />
-            <span>123 が出たら終了</span>
-          </label>
-
-          <div className={useRule123 && rule123Type === "end" ? "nested-field" : "nested-field disabled"}>
-            <input
-              className="config-input"
-              disabled={!useRule123 || rule123Type !== "end"}
-              inputMode="numeric"
-              onChange={(event) => {
-                if (/^\d*$/.test(event.target.value)) setEndCupLimit(event.target.value);
-              }}
-              placeholder="0"
-              type="text"
-              value={endCupLimit}
-            />
-            <span>{labels.fields.endCupLimit}</span>
-          </div>
-        </div>
-      </section>
-
-      <div className="start-actions">
-        <button className="start-button lose" onClick={() => startGame("lose")} type="button">
-          {labels.actions.startLoseMode}
-        </button>
-        <button className="start-button win" onClick={() => startGame("win")} type="button">
-          {labels.actions.startWinMode}
-        </button>
-      </div>
+      <HomeHeader />
+      <PlayerSection
+        players={players}
+        onOpenDialog={openPlayerDialog}
+        onRemovePlayer={(index) => setPlayers((prev) => prev.filter((_, itemIndex) => itemIndex !== index))}
+      />
+      <GameSettingsSection
+        config={config}
+        endCupLimit={endCupLimit}
+        rule123Type={rule123Type}
+        useRule123={useRule123}
+        onConfigChange={updateNumericConfig}
+        onEndCupLimitChange={changeEndCupLimit}
+        onRule123TypeChange={changeRule123Type}
+        onUseRule123Change={changeRule123Enabled}
+      />
+      <StartActions onStart={startGame} />
 
       {isPlayerDialogOpen && (
-        <div className="dialog-backdrop" role="presentation">
-          <div className="dialog player-dialog" role="dialog" aria-modal="true">
-            <div className="dialog-title">{labels.sections.playerDialogTitle}</div>
-            <label className="dialog-field">
-              <span>{labels.fields.playerCount}</span>
-              <select value={playerCount} onChange={(event) => changePlayerCount(Number(event.target.value))}>
-                {Array.from({ length: 9 }, (_, index) => index + 2).map((count) => (
-                  <option key={count} value={count}>
-                    {count}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            <div className="dialog-field-list">
-              {players.map((name, index) => (
-                <input
-                  key={index}
-                  onChange={(event) => {
-                    const next = [...players];
-                    next[index] = event.target.value;
-                    setPlayers(next);
-                  }}
-                  placeholder={`${labels.fields.playerName}${index + 1}`}
-                  type="text"
-                  value={name}
-                />
-              ))}
-            </div>
-
-            <div className="dialog-actions">
-              <button
-                className="secondary-button"
-                onClick={() => {
-                  setPlayers(backupPlayers);
-                  setIsPlayerDialogOpen(false);
-                }}
-                type="button"
-              >
-                {labels.actions.cancel}
-              </button>
-              <button
-                className="primary-button"
-                onClick={() => {
-                  try {
-                    validatePlayers(players);
-                    setIsPlayerDialogOpen(false);
-                  } catch (error) {
-                    if (error instanceof Error) setErrorMessage(error.message);
-                  }
-                }}
-                type="button"
-              >
-                {labels.actions.done}
-              </button>
-            </div>
-          </div>
-        </div>
+        <PlayerDialog
+          playerCount={playerCount}
+          players={players}
+          onCancel={() => {
+            setPlayers(backupPlayers);
+            setIsPlayerDialogOpen(false);
+          }}
+          onDone={confirmPlayers}
+          onPlayerCountChange={changePlayerCount}
+          onPlayerNameChange={changePlayerName}
+        />
       )}
 
       <ErrorDialog
@@ -276,33 +160,6 @@ export default function Home() {
         onClose={() => setErrorMessage(null)}
       />
     </main>
-  );
-}
-
-function NumericField({
-  label,
-  unit,
-  value,
-  onChange,
-}: {
-  label: string;
-  unit: string;
-  value: string;
-  onChange: (value: string) => void;
-}) {
-  return (
-    <label className="numeric-field">
-      <span>{label}</span>
-      <input
-        className="config-input"
-        inputMode="numeric"
-        onChange={(event) => onChange(event.target.value)}
-        placeholder="0"
-        type="text"
-        value={value}
-      />
-      <span>{unit}</span>
-    </label>
   );
 }
 
