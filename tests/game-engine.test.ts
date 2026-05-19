@@ -127,7 +127,7 @@ test("revives everyone when 123 revive rule is active", () => {
   const outcome = applyResult(state, -100);
 
   assert.equal(outcome.sound, "123");
-  assert.deepEqual(outcome.effects, ["curse"]);
+  assert.deepEqual(outcome.effects, ["curse", "revive"]);
   assert.equal(outcome.state.turn, 0);
   assert.deepEqual(
     outcome.state.players.map((player) => ({

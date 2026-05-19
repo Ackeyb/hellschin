@@ -71,6 +71,7 @@ export default function GamePage({ mode }: GamePageProps) {
     if (rollEffect) showTemporaryEffect(rollEffect.effect, rollEffect.duration);
     if (outcome.effects.includes("finish")) showTemporaryEffect("finish", 2200, followUpDelay);
     if (outcome.effects.includes("nextRound")) showTemporaryEffect("nextRound", 1600, followUpDelay);
+    if (outcome.effects.includes("revive")) showTemporaryEffect("revive", 1800, followUpDelay);
   };
 
   const backToSettings = () => {

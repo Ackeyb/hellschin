@@ -67,6 +67,7 @@ export type GameEffect =
   | "none"
   | "finish"
   | "nextRound"
+  | "revive"
   | "curse"
   | "happy"
   | "happier"

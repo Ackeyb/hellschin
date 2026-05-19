@@ -72,6 +72,7 @@ export const labels = {
   overlays: {
     finish: "決着",
     nextRound: "NEXT!!",
+    revive: "全員復活",
   },
 } as const;
 

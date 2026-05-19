@@ -7,6 +7,7 @@ export type EffectState = {
   happiest: boolean;
   finish: boolean;
   nextRound: boolean;
+  revive: boolean;
 };
 
 type GameEffectsProps = {
@@ -14,7 +15,7 @@ type GameEffectsProps = {
 };
 
 type SpecialEffectType = "curse" | "happy" | "happier" | "happiest";
-type CutInEffectType = "finish" | "nextRound";
+type CutInEffectType = "finish" | "nextRound" | "revive";
 
 export const initialEffects: EffectState = {
   curse: false,
@@ -23,6 +24,7 @@ export const initialEffects: EffectState = {
   happiest: false,
   finish: false,
   nextRound: false,
+  revive: false,
 };
 
 export default function GameEffects({ effects }: GameEffectsProps) {
@@ -34,6 +36,7 @@ export default function GameEffects({ effects }: GameEffectsProps) {
       {effects.happiest && <SpecialEffectOverlay type="happiest" title="ピンゾロ" />}
       {effects.finish && <CutInEffect type="finish" title={labels.overlays.finish} />}
       {effects.nextRound && <CutInEffect type="nextRound" title={labels.overlays.nextRound} />}
+      {effects.revive && <CutInEffect type="revive" title={labels.overlays.revive} />}
     </>
   );
 }

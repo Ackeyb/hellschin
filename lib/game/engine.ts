@@ -67,6 +67,7 @@ export function applyResult(state: GameState, selectedResult: number): ApplyResu
     }
 
     if (nextState.rule123?.type === "revive") {
+      effects.push("revive");
       nextState.players = nextState.players.map((item) => ({
         ...item,
         canPlay: true,
