@@ -345,8 +345,12 @@ button:disabled {
   place-items: center;
   overflow: hidden;
   background:
-    linear-gradient(120deg, rgba(0, 0, 0, 0.72), rgba(10, 15, 25, 0.34) 48%, rgba(0, 0, 0, 0.72)),
-    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0 1px, transparent 1px 16px);
+    radial-gradient(circle at 18% 26%, rgba(255, 255, 255, 0.94) 0 0.45rem, transparent 0.5rem),
+    radial-gradient(circle at 78% 28%, rgba(255, 238, 163, 0.9) 0 0.4rem, transparent 0.46rem),
+    radial-gradient(circle at 30% 78%, rgba(186, 247, 223, 0.92) 0 0.44rem, transparent 0.5rem),
+    radial-gradient(circle at 84% 74%, rgba(255, 198, 214, 0.9) 0 0.5rem, transparent 0.56rem),
+    linear-gradient(120deg, rgba(255, 246, 250, 0.9), rgba(255, 249, 221, 0.7) 48%, rgba(232, 255, 246, 0.86)),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.34) 0 2px, transparent 2px 16px);
   isolation: isolate;
   animation: cutInBackdrop 0.42s ease-out both;
 }
@@ -365,7 +369,7 @@ button:disabled {
 
 .cut-in-overlay::before {
   top: 34%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.45), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.86), transparent);
   animation-delay: 0.04s;
 }
 
@@ -380,53 +384,57 @@ button:disabled {
   position: absolute;
   width: 140vw;
   height: clamp(96px, 18vw, 168px);
+  border-block: 3px solid rgba(255, 255, 255, 0.86);
   transform: rotate(-11deg) translateX(-120%);
   animation: cutInBand 0.56s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .finish-cut-in .cut-in-slash,
 .finish-cut-in::after {
-  background: linear-gradient(90deg, transparent, #111827 16%, #dc2626 48%, #f97316 64%, #111827 84%, transparent);
-  box-shadow: 0 0 40px rgba(220, 38, 38, 0.58);
+  background: linear-gradient(90deg, transparent, #ffb8c8 16%, #ff5f92 48%, #fff0a6 64%, #ffb8c8 84%, transparent);
+  box-shadow: 0 0 42px rgba(255, 95, 146, 0.52);
 }
 
 .nextRound-cut-in .cut-in-slash,
 .nextRound-cut-in::after {
-  background: linear-gradient(90deg, transparent, #0f172a 16%, #2563eb 48%, #22d3ee 64%, #0f172a 84%, transparent);
-  box-shadow: 0 0 40px rgba(37, 99, 235, 0.58);
+  background: linear-gradient(90deg, transparent, #bdefff 16%, #74c9ff 48%, #fff0a6 64%, #bdefff 84%, transparent);
+  box-shadow: 0 0 42px rgba(116, 201, 255, 0.52);
 }
 
 .revive-cut-in .cut-in-slash,
 .revive-cut-in::after {
-  background: linear-gradient(90deg, transparent, #052e16 16%, #16a34a 45%, #facc15 64%, #052e16 84%, transparent);
-  box-shadow: 0 0 44px rgba(34, 197, 94, 0.62);
+  background: linear-gradient(90deg, transparent, #bbf7d0 16%, #55d991 45%, #fff0a6 64%, #bbf7d0 84%, transparent);
+  box-shadow: 0 0 44px rgba(85, 217, 145, 0.56);
 }
 
 .cut-in-text {
   position: relative;
+  padding: 0.08em 0.22em 0.14em;
+  border-radius: 999px;
   color: #fff;
   font-size: clamp(3.2rem, 15vw, 7.5rem);
   font-weight: 1000;
   line-height: 0.9;
   letter-spacing: 0;
-  text-shadow: 0 5px 0 #111827, 0 0 26px rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.26);
+  text-shadow: 0 4px 0 rgba(107, 58, 68, 0.3), 0 0 26px rgba(255, 255, 255, 0.86);
   transform: skew(-10deg) scale(0.76);
   animation: cutInText 0.78s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .finish-cut-in .cut-in-text {
-  color: #fee2e2;
-  text-shadow: 0 5px 0 #7f1d1d, 0 0 30px rgba(248, 113, 113, 0.9);
+  color: #fff8fb;
+  text-shadow: 0 4px 0 #c0265f, 0 0 30px rgba(255, 240, 166, 0.94);
 }
 
 .nextRound-cut-in .cut-in-text {
-  color: #dbeafe;
-  text-shadow: 0 5px 0 #1e3a8a, 0 0 30px rgba(34, 211, 238, 0.85);
+  color: #f8fdff;
+  text-shadow: 0 4px 0 #2f83c5, 0 0 30px rgba(255, 240, 166, 0.92);
 }
 
 .revive-cut-in .cut-in-text {
-  color: #dcfce7;
-  text-shadow: 0 5px 0 #14532d, 0 0 30px rgba(250, 204, 21, 0.82);
+  color: #f7fff9;
+  text-shadow: 0 4px 0 #15803d, 0 0 30px rgba(255, 240, 166, 0.94);
 }
 
 @keyframes curseSpin {
